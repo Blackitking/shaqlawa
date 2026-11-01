@@ -1,1424 +1,831 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ku" dir="rtl">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>XOSHNAW AI PREMIUM</title>
-
-<!-- Supabase SQL migration required once: ALTER TABLE public.ai_content ADD COLUMN IF NOT EXISTS app_name text; -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/tus-js-client@4/dist/tus.min.js"></script>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#123b35">
+<title>پەیمانگای وەرزشی شەقڵاوە</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,Tahoma,sans-serif;background:#f5f7fb;color:#151515;direction:rtl}
-header{background:#111827;color:white;padding:15px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:50}
-.logo{font-size:21px;font-weight:bold}
-.header-actions{display:flex;gap:8px}
-button{border:0;cursor:pointer}
-.header-btn{padding:10px 15px;border-radius:10px;background:#fff;color:#111827;font-weight:bold}
-.dark-btn{background:#2563eb;color:white}
-.logout-header{background:#dc2626;color:white}
-.hero{padding:70px 20px;text-align:center;background:linear-gradient(135deg,#111827,#2563eb);color:white}
-.big-emoji{font-size:65px;margin-bottom:15px}
-.hero h1{font-size:38px;margin-bottom:15px}
-.hero p{max-width:700px;margin:auto;line-height:1.9;font-size:17px}
-.hero-btn{margin-top:25px;padding:14px 25px;border-radius:12px;background:#fff;color:#111827;font-size:16px;font-weight:bold}
-.container{width:min(1100px,92%);margin:auto}
-section{padding:55px 0}
-.section-title{text-align:center;font-size:28px;margin-bottom:30px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.card{background:white;border-radius:18px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.07);text-align:center}
-.emoji{font-size:45px;margin-bottom:15px}
-.card h3{margin-bottom:12px}
-.card p{color:#666;line-height:1.8}
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.plan{position:relative;background:white;border-radius:20px;padding:30px 25px;box-shadow:0 8px 30px rgba(0,0,0,.08);text-align:center}
-.plan.featured{border:3px solid #2563eb}
-.badge{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);background:#2563eb;color:white;padding:7px 15px;border-radius:20px;font-size:13px;white-space:nowrap}
-.price{font-size:34px;font-weight:bold;margin:18px 0;color:#2563eb}
-.price small{font-size:14px}
-.plan ul{list-style:none;text-align:right;line-height:2.2;margin:15px 0 25px}
-.plan button,.submit-btn{width:100%;padding:13px;border-radius:11px;background:#2563eb;color:white;font-weight:bold;font-size:15px}
-.dashboard{display:none;margin:30px auto;width:min(1100px,92%);background:white;padding:30px;border-radius:20px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
-.status{padding:15px;border-radius:12px;margin:15px 0;font-weight:bold}
-.status.pending{background:#fff3cd;color:#856404}
-.status.active{background:#d1fae5;color:#065f46}
-.admin-box{display:none;background:#ede9fe;color:#5b21b6;padding:18px;border-radius:14px;margin:20px 0;font-weight:bold}
-.admin-title{font-size:24px;margin-bottom:20px;text-align:center}
-.admin-request{background:#f8fafc;border:1px solid #e5e7eb;padding:18px;border-radius:15px;margin-bottom:15px;line-height:2}
-.receipt-btn{display:inline-block;background:#2563eb;color:white;padding:9px 15px;border-radius:9px;text-decoration:none;font-weight:bold;margin:8px 0}
-.accept-btn{background:#16a34a;color:white;padding:10px 16px;border-radius:9px;font-weight:bold;margin:5px}
-.reject-btn{background:#dc2626;color:white;padding:10px 16px;border-radius:9px;font-weight:bold;margin:5px}
-.logout{margin-top:20px;padding:12px 20px;border-radius:10px;background:#dc2626;color:white;font-weight:bold}
-.payment-list{margin-top:20px}
-.payment-item{background:#f8fafc;padding:18px;border-radius:14px;margin-bottom:12px;line-height:1.9}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;align-items:center;justify-content:center;padding:15px;overflow:auto}
-.modal-box{width:min(520px,100%);max-height:92vh;overflow:auto;background:white;border-radius:20px;padding:25px;position:relative}
-.close{position:absolute;top:10px;left:12px;width:35px;height:35px;border-radius:50%;background:#f1f5f9;font-size:25px}
-.modal-title{text-align:center;margin-bottom:25px}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;margin-bottom:7px;font-weight:bold}
-input,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-family:inherit;font-size:15px}
-textarea{min-height:90px;resize:vertical}
-.selected-plan{background:#eff6ff;padding:15px;border-radius:12px;text-align:center;line-height:2;margin-bottom:20px}
-.fib-box{background:#eff6ff;border:1px solid #bfdbfe;padding:20px;border-radius:15px;margin-bottom:20px}
-.fib-number{background:white;padding:15px;text-align:center;font-size:24px;font-weight:bold;letter-spacing:2px;border-radius:10px;margin:15px 0}
-.notice{background:#dcfce7;color:#166534;padding:10px;border-radius:8px;text-align:center}
-.warning{margin-top:12px;background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;line-height:1.8;text-align:center}
-.success{display:none;background:#dcfce7;color:#166534;padding:18px;border-radius:12px;text-align:center;line-height:1.8}
-.empty{text-align:center;padding:20px;color:#777;background:#f8fafc;border-radius:12px}
-.error-box{margin:15px 0;padding:15px;background:#fee2e2;color:#991b1b;border-radius:12px;line-height:1.8;display:none}
-
-/* =========================
-PREMIUM CONTENT
-========================= */
-#premiumSection{display:none}
-.premium-box{background:linear-gradient(135deg,#111827,#2563eb);color:white;border-radius:22px;padding:30px;box-shadow:0 10px 35px rgba(0,0,0,.12)}
-.premium-header{text-align:center;margin-bottom:25px}
-.premium-header h2{font-size:30px;margin-bottom:10px}
-.premium-header p{line-height:1.9;opacity:.92}
-.premium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.premium-card{background:white;color:#151515;border-radius:16px;padding:22px;text-align:center}
-.premium-card .premium-icon{font-size:42px;margin-bottom:12px}
-.premium-card h3{margin-bottom:10px}
-.premium-card p{color:#666;line-height:1.8}
-.premium-link{display:inline-block;margin-top:15px;background:#2563eb;color:white;text-decoration:none;padding:10px 15px;border-radius:10px;font-weight:bold}
-.locked-premium{display:none;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:18px;padding:25px;text-align:center;line-height:2}
-.premium-expiry{text-align:center;margin-top:20px;background:rgba(255,255,255,.14);padding:12px;border-radius:12px}
-
-footer{background:#111827;color:white;text-align:center;padding:30px 15px;margin-top:30px}
-
-@media(max-width:800px){
-.cards,.plans,.premium-grid{grid-template-columns:1fr}
-header{flex-direction:column}
-.hero h1{font-size:30px}
+:root{--green:#145c45;--green2:#1c8060;--ink:#172522;--muted:#64736e;--bg:#f3f7f5;--line:#dce7e1;--white:#fff;--red:#b42318}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.75}
+header{background:linear-gradient(120deg,#103d32,#24785c);color:white;padding:25px 16px 22px}
+.wrap{max-width:1050px;margin:auto;padding:0 15px}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:52px;height:52px;border-radius:16px;background:#ffffff20;display:grid;place-items:center;font-size:27px}
+h1{font-size:22px;margin:0}
+header p{margin:3px 0 0;color:#d8eee5;font-size:13px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.tab,button{border:0;border-radius:11px;padding:10px 14px;font:inherit;cursor:pointer}
+.tab{background:#ffffff1c;color:white}
+.tab.active{background:white;color:var(--green);font-weight:bold}
+main{padding:22px 0 50px}
+.hero{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:17px}
+.hero h2{margin:0 0 5px;font-size:20px}
+.muted{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}
+.card{background:white;border:1px solid var(--line);border-radius:16px;padding:17px;min-width:0}
+.card h3{margin:0 0 7px;font-size:17px}
+button.primary{background:var(--green);color:white}
+button.secondary{background:#e8f2ed;color:var(--green)}
+button.danger{background:#fff0ee;color:var(--red)}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:white;margin:5px 0 12px}
+textarea{min-height:95px;resize:vertical}
+label{font-size:13px;font-weight:bold}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1}
+.hidden{display:none!important}
+.item{padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border:0}
+.item h4{margin:0 0 3px}
+.pill{display:inline-block;background:#e8f2ed;color:var(--green);border-radius:30px;padding:2px 10px;font-size:12px}
+.notice{padding:12px;border-radius:10px;background:#fff8e6;color:#795600;margin:10px 0;font-size:13px}
+.error{color:var(--red)}
+.success{color:var(--green)}
+.question{padding:15px;border:1px solid var(--line);border-radius:12px;margin:12px 0}
+.option{display:block;width:100%;text-align:right;margin:7px 0;background:#f1f6f3;color:var(--ink)}
+.option.selected{outline:2px solid var(--green)}
+footer{text-align:center;color:var(--muted);padding:25px;font-size:12px}
+a{color:var(--green)}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+@media(max-width:560px){
+h1{font-size:18px}
+.tab{flex:1;padding:9px 6px;font-size:12px}
+.hero{padding:16px}
+.card{padding:14px}
 }
-
-.ai-content-wrap{margin-top:25px}
-.ai-admin-tools{background:#f8fafc;border:2px dashed #2563eb;border-radius:18px;padding:20px;margin-bottom:22px}
-.ai-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.ai-content-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.ai-content-card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 8px 28px #00000012;border:1px solid #e5e7eb}
-.ai-content-card .content-body{padding:16px}
-.ai-content-card h3{margin-bottom:8px}
-.ai-content-card p{color:#667085;line-height:1.8;white-space:pre-wrap}
-.ai-content-media{width:100%;display:block;max-height:420px;object-fit:cover;background:#111}
-.ai-content-empty{padding:22px;text-align:center;background:#f8fafc;border-radius:16px;color:#667085}
-.content-delete{margin-top:12px;background:#dc2626;color:#fff;padding:10px 14px;border-radius:10px;font-weight:700}
-.download-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;background:#16a34a;color:#fff!important;padding:11px 18px;border-radius:12px;font-weight:800;text-decoration:none;width:100%;box-sizing:border-box}
-@media(max-width:700px){.ai-admin-grid,.ai-content-grid{grid-template-columns:1fr}}
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="logo">XOSHNAW AI PREMIUM</div>
+<div class="wrap">
 
-<div class="header-actions" id="authButtons">
-<button class="header-btn" onclick="openLogin()">👤 چوونەژوورەوە</button>
-<button class="header-btn dark-btn" onclick="openRegister()">📝 تۆمارکردن</button>
-</div>
+ <div class="brand">
+  <div class="logo">🏅</div>
+  <div>
+   <h1>پەیمانگای وەرزشی شەقڵاوە</h1>
+   <p>ناوەندی فێرکاری و تاقیکردنەوەی ئۆنلاین</p>
+  </div>
+ </div>
 
-<div class="header-actions" id="logoutArea" style="display:none">
-<button class="header-btn logout-header" onclick="logout()">🚪 چوونەدەرەوە</button>
+ <nav id="nav">
+  <button class="tab active" data-page="home">سەرەتا</button>
+  <button class="tab" data-page="lessons">وانەکان</button>
+  <button class="tab" data-page="pdfs">مەلزەمە PDF</button>
+  <button class="tab" data-page="qa">پرسیار و وەڵام</button>
+  <button class="tab" data-page="quiz">تاقیکردنەوە</button>
+  <button class="tab" data-page="admin">بەڕێوەبەر</button>
+ </nav>
+
 </div>
 </header>
 
-<section class="hero">
-<div class="big-emoji">🤖</div>
-<h1>بەخێربێیت بۆ XOSHNAW AI</h1>
-<p>شوێنێکی تایبەت بۆ فێربوونی AI Tools، ڤیدیۆی فێرکاری، ئامرازە زیرەکەکان و ناوەڕۆکی Premium.</p>
-<button class="hero-btn" onclick="scrollToPlans()">👑 بەژداربوونی Premium</button>
+<main class="wrap">
+
+<!-- سەرەتا -->
+<section id="home" class="page">
+
+ <div class="hero">
+  <h2>بەخێربێیت بۆ پەیمانگای وەرزشی شەقڵاوە</h2>
+
+  <p class="muted">
+   پۆلەکەت هەڵبژێرە بۆ بینینی وانە و مەلزەمە و تاقیکردنەوەکان.
+   هەموو زانیارییەکان لە سێرڤەری هاوبەش پاشەکەوت دەکرێن.
+  </p>
+
+  <label for="studentClass">پۆلی خوێندکار</label>
+
+  <select id="studentClass">
+   <option value="">پۆل هەڵبژێرە</option>
+   <option value="1">پۆلی یەکەم</option>
+   <option value="2">پۆلی دووەم</option>
+   <option value="3">پۆلی سێیەم</option>
+   <option value="4">پۆلی چوارەم</option>
+   <option value="5">پۆلی پێنجەم</option>
+  </select>
+
+  <button class="primary" id="saveClass">پاشەکەوتکردنی پۆل</button>
+  <span id="classStatus" class="muted"></span>
+ </div>
+
+ <div class="grid">
+
+  <div class="card">
+   <h3>📚 وانەکان</h3>
+   <p class="muted">وانەکانی پۆلەکەت بخوێنەوە.</p>
+   <button class="secondary" data-go="lessons">بینینی وانەکان</button>
+  </div>
+
+  <div class="card">
+   <h3>📄 مەلزەمەکان</h3>
+   <p class="muted">فایلە PDF ـەکان بکەرەوە.</p>
+   <button class="secondary" data-go="pdfs">بینینی مەلزەمەکان</button>
+  </div>
+
+  <div class="card">
+   <h3>📝 تاقیکردنەوە</h3>
+   <p class="muted">ئاستی خۆت تاقی بکەرەوە.</p>
+   <button class="secondary" data-go="quiz">دەستپێکردن</button>
+  </div>
+
+ </div>
 </section>
 
-<section>
-<div class="container">
-<h2 class="section-title">🚀 چی بەدەست دەهێنیت؟</h2>
-<div class="cards">
-<div class="card"><div class="emoji">🤖</div><h3>AI Tools</h3><p>فێربوونی ئامرازەکانی AI و چۆنیەتی بەکارهێنانیان.</p></div>
-<div class="card"><div class="emoji">🎬</div><h3>ڤیدیۆی فێرکاری</h3><p>ڤیدیۆی نوێی فێرکاری بە شێوەی ڕوون و ئاسان.</p></div>
-<div class="card"><div class="emoji">👑</div><h3>Premium</h3><p>دەستگەیشتن بە ناوەڕۆکی تایبەت بۆ ئەندامانی Premium.</p></div>
-</div>
-</div>
+<!-- وانەکان -->
+<section id="lessons" class="page hidden">
+ <div class="hero">
+  <h2>وانەکان</h2>
+  <p class="muted">وانەکانی پۆلی هەڵبژێردراو.</p>
+ </div>
+ <div id="lessonList" class="card">چاوەڕێ بکە...</div>
 </section>
 
-<section id="plans">
-<div class="container">
-<h2 class="section-title">👑 پلانەکانی Premium</h2>
-<div class="plans">
-
-<div class="plan">
-<h3>هەفتانە</h3>
-<div class="price">1,500 <small>د.ع</small></div>
-<ul>
-<li>✓ دەستگەیشتن بە Premium</li>
-<li>✓ ڤیدیۆی فێرکاری</li>
-<li>✓ AI Tools</li>
-</ul>
-<button onclick="choosePlan('هەفتانە',1500)">هەڵبژاردن</button>
-</div>
-
-<div class="plan featured">
-<div class="badge">باشترین هەڵبژاردە</div>
-<h3>مانگانە</h3>
-<div class="price">4,000 <small>د.ع</small></div>
-<ul>
-<li>✓ دەستگەیشتن بە Premium</li>
-<li>✓ هەموو ڤیدیۆکان</li>
-<li>✓ AI Tools</li>
-<li>✓ ناوەڕۆکی نوێ</li>
-</ul>
-<button onclick="choosePlan('مانگانە',4000)">هەڵبژاردن</button>
-</div>
-
-<div class="plan">
-<h3>ساڵانە</h3>
-<div class="price">15,000 <small>د.ع</small></div>
-<ul>
-<li>✓ Premium بۆ ساڵێک</li>
-<li>✓ هەموو ڤیدیۆکان</li>
-<li>✓ AI Tools</li>
-<li>✓ هەموو ناوەڕۆکی داهاتوو</li>
-</ul>
-<button onclick="choosePlan('ساڵانە',15000)">هەڵبژاردن</button>
-</div>
-
-</div>
-</div>
+<!-- PDF -->
+<section id="pdfs" class="page hidden">
+ <div class="hero">
+  <h2>مەلزەمە PDF</h2>
+  <p class="muted">فایلەکانی خوێندنەوە بە پۆل جیاکراونەتەوە.</p>
+ </div>
+ <div id="pdfList" class="card">چاوەڕێ بکە...</div>
 </section>
 
-<!-- PREMIUM CONTENT -->
-<section id="premiumSection">
-<div class="container">
+<!-- پرسیار و وەڵام -->
+<section id="qa" class="page hidden">
 
-<div id="lockedPremium" class="locked-premium">
-<h2>🔒 ناوەڕۆکی Premium داخراوە</h2>
-<p>تکایە Premium ـەکەت چالاک بکە بۆ دەستگەیشتن بە ئەم ناوەڕۆکە.</p>
-<button class="hero-btn" onclick="scrollToPlans()">👑 بینینی پلانەکان</button>
-</div>
+ <div class="hero">
+  <h2>پرسیار و وەڵام</h2>
+  <p class="muted">پرسیارەکان بخوێنەوە یان پرسیارێکی نوێ بنێرە.</p>
+ </div>
 
-<div id="premiumContent" class="premium-box">
+ <div class="card">
 
-<div class="premium-header">
-<h2>👑 XOSHNAW AI PREMIUM</h2>
-<p>بەخێربێیت بۆ بەشی تایبەتی ئەندامانی Premium.</p>
-</div>
+  <label>پرسیارەکەت</label>
+  <textarea id="newQuestion" placeholder="پرسیارەکەت لێرە بنووسە..."></textarea>
 
-<div id="aiContentArea" class="ai-content-wrap"></div>
+  <label>ناوت (ئارەزوومەندانە)</label>
+  <input id="askerName" placeholder="ناو">
 
-<div class="premium-expiry" id="premiumExpiry"></div>
+  <button class="primary" id="sendQuestion">ناردنی پرسیار</button>
 
-</div>
-</div>
+  <div id="askStatus" class="muted"></div>
+
+ </div>
+
+ <div id="qaList" class="card" style="margin-top:13px">چاوەڕێ بکە...</div>
+
 </section>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="dashboard">
+<!-- تاقیکردنەوە -->
+<section id="quiz" class="page hidden">
 
-<h2>👤 بەخێربێیت</h2>
-<p id="dashboardName"></p>
+ <div class="hero">
+  <h2>تاقیکردنەوەی ئۆنلاین</h2>
+  <p class="muted">تاقیکردنەوەی پۆلەکەت دەستپێبکە.</p>
+  <button class="primary" id="loadQuiz">دەستپێکردنی تاقیکردنەوە</button>
+ </div>
 
-<div id="adminBox" class="admin-box">
-<div class="admin-title">👑 ADMIN PANEL</div>
-<p>بەخێربێیت بەڕێوەبەر ❤️</p>
-<br>
-<div class="ai-admin-tools">
-<h3 style="margin-bottom:10px">🤖 بەڕێوەبردنی ناوەڕۆکی AI</h3>
-<p style="line-height:1.8;margin-bottom:14px">تەنها ئەدمین دەتوانێت ڤیدیۆ، وێنە یان دەق زیاد بکات. بەشێک کە بەتاڵە لای ئەندام نیشان نادرێت.</p>
-<div class="ai-admin-grid">
-<div class="form-group"><label>بەشی ناوەڕۆک</label><select id="contentCategory" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:10px"><option value="AI TOOL">🤖 AI TOOL</option><option value="APPS MODS AND HACK">📱 APPS MODS AND HACK</option><option value="FILM AND DRAMA">🎬 FILM AND DRAMA</option></select></div>
-<div class="form-group"><label>ناوی بەرنامە</label><input id="contentAppName" type="text" placeholder="Snapchat" required></div>\n<div class="form-group"><label>ناونیشانی ناوەڕۆک</label><input id="contentTitle" type="text" placeholder="بۆ نموونە: ڤیدیۆی فێرکاری ١"></div>
-<div class="form-group"><label>جۆری ناوەڕۆک</label><select id="contentType" onchange="toggleContentInput()" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:10px"><option value="video">🎬 ڤیدیۆ</option><option value="image">🖼️ وێنە</option><option value="text">📝 دەق</option><option value="link">📱 ئەپ + لینکی Download</option></select></div>
-</div>
-<div class="form-group"><label>دەق / کورتە باس</label><textarea id="contentDescription" placeholder="کورتەی ناوەڕۆک..."></textarea></div>
-<div class="form-group" id="fileInputGroup"><label>فایل (بۆ ڤیدیۆ یان وێنە)</label><input id="contentFile" type="file" accept="video/*,image/*" onchange="showSelectedFileInfo()"><div id="uploadInfo" style="margin-top:10px;font-size:13px;color:#475467"></div><div id="uploadProgressWrap" style="display:none;margin-top:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;height:12px"><div id="uploadProgressBar" style="width:0%;height:100%;background:#2563eb;transition:width .2s"></div></div><div id="uploadProgressText" style="display:none;margin-top:6px;font-size:13px;font-weight:800;color:#2563eb"></div></div>
-<div class="form-group" id="linkInputGroup" style="display:none"><label>📱 ناوی ئەپ</label><input id="appName" type="text" placeholder="بۆ نموونە: CapCut Pro"></div><div class="form-group" id="linkUrlGroup" style="display:none"><label>🔗 لینکی Download</label><input id="contentLink" type="url" inputmode="url" placeholder="https://example.com/app.apk"></div>
-<button class="submit-btn" onclick="addAIContent()">➕ زیادکردنی ناوەڕۆک</button>
-<div id="contentAdminMessage" class="error-box" style="margin-top:10px"></div>
-</div>
-<div id="adminContentList" style="margin-bottom:20px"></div>
-<div id="adminRequests">داواکارییەکان لێرە دەردەکەون.</div>
-</div>
+ <div id="quizArea" class="card">
+  تاقیکردنەوەیەک هەڵبژێردراو نییە یان ئامادە نییە.
+ </div>
 
-<div id="premiumStatus" class="status pending">Premium هێشتا چالاک نەکراوە.</div>
-<div id="dashboardPlan"></div>
-<div id="myPayments" class="payment-list"></div>
+</section>
 
-<button class="logout" onclick="logout()">🚪 چوونەدەرەوە</button>
-</div>
+<!-- بەڕێوەبەر -->
+<section id="admin" class="page hidden">
 
-<!-- REGISTER -->
-<div id="registerModal" class="modal">
-<div class="modal-box">
-<button class="close" onclick="closeAll()">×</button>
-<h2 class="modal-title">📝 تۆمارکردنی ئەکاونت</h2>
+ <div class="hero">
+  <h2>بەشی بەڕێوەبەر</h2>
+  <p class="muted">
+   تەنها کەسی خاوەن ADMIN_SECRET دەتوانێت ناوەڕۆک زیاد بکات و دەستکاری بکات.
+  </p>
+ </div>
 
-<div class="form-group"><label>ناوی تەواو</label><input id="regName" type="text"></div>
-<div class="form-group"><label>ژمارەی مۆبایل</label><input id="regPhone" type="tel"></div>
-<div class="form-group"><label>ئیمەیڵ</label><input id="regEmail" type="email"></div>
-<div class="form-group"><label>وشەی نهێنی</label><input id="regPassword" type="password"></div>
+ <div class="card" id="adminLogin">
 
-<div id="registerError" class="error-box"></div>
+  <label>کلیلی بەڕێوەبەر (ADMIN_SECRET)</label>
+  <input id="adminKey" type="password" autocomplete="off" placeholder="کلیلی بەڕێوەبەر">
 
-<button class="submit-btn" id="registerBtn" onclick="registerUser()">📝 تۆمارکردن</button>
-</div>
-</div>
+  <button class="primary" id="adminConnect">چوونەژوورەوە</button>
 
-<!-- LOGIN -->
-<div id="loginModal" class="modal">
-<div class="modal-box">
-<button class="close" onclick="closeAll()">×</button>
-<h2 class="modal-title">🔐 چوونەژوورەوە</h2>
+  <div id="adminStatus" class="muted"></div>
 
-<div class="form-group"><label>ئیمەیڵ</label><input id="loginEmail" type="email"></div>
-<div class="form-group"><label>وشەی نهێنی</label><input id="loginPassword" type="password"></div>
+ </div>
 
-<button class="submit-btn" onclick="loginUser()">🔐 Login</button>
-<button type="button" onclick="openForgotPassword()" style="background:none;color:#2563eb;font-weight:bold;margin-top:12px;width:100%;">🔑 پاسۆڕدت لەبیر چووە؟</button>
-</div>
-</div>
+ <div id="adminPanel" class="hidden">
 
-<!-- FORGOT PASSWORD -->
-<div id="forgotPasswordModal" class="modal">
-<div class="modal-box">
-<button class="close" onclick="closeAll()">×</button>
-<h2 class="modal-title">🔐 ڕیسێتی پاسۆڕد</h2>
-<p style="line-height:1.9;margin-bottom:18px;text-align:center;">ئیمەیڵەکەت بنووسە تا لینکێکی گۆڕینی پاسۆڕد بۆت بنێردرێت.</p>
-<div class="form-group"><label>ئیمەیڵ</label><input id="forgotEmail" type="email" autocomplete="email"></div>
-<div id="forgotError" class="error-box"></div>
-<button class="submit-btn" onclick="sendResetPassword()">📩 ناردنی لینک</button>
-</div>
-</div>
+  <div class="notice">
+   کلیلەکە تەنها لە مۆبایلی خۆت بەکاربهێنە و لە کەسی تر مەیدە.
+  </div>
 
-<!-- RESET PASSWORD -->
-<div id="resetPasswordModal" class="modal">
-<div class="modal-box">
-<h2 class="modal-title">🔑 دانانی پاسۆڕدی نوێ</h2>
-<div class="form-group"><label>پاسۆڕدی نوێ</label><input id="newPassword" type="password" autocomplete="new-password"></div>
-<div class="form-group"><label>دووبارە پاسۆڕد</label><input id="newPassword2" type="password" autocomplete="new-password"></div>
-<div id="resetError" class="error-box"></div>
-<button class="submit-btn" onclick="updatePassword()">✅ گۆڕینی پاسۆڕد</button>
-</div>
-</div>
+  <div class="admin-grid">
 
-<!-- PAYMENT -->
-<div id="paymentModal" class="modal">
-<div class="modal-box">
+   <!-- زیادکردنی وانە -->
+   <div class="card">
+    <h3>زیادکردنی وانە</h3>
 
-<button class="close" onclick="closePayment()">×</button>
-<h2 class="modal-title">💳 تەواوکردنی بەژداری</h2>
+    <label>پۆل</label>
+    <select id="lClass"></select>
 
-<div class="selected-plan">
-پلان: <strong id="selectedPlan">---</strong><br>
-بڕ: <strong id="selectedPrice">---</strong> د.ع
-</div>
+    <label>ناونیشان</label>
+    <input id="lTitle">
 
-<div class="fib-box">
-<h3>🔵 پارەدان بە FIB</h3>
-<p style="margin-top:10px">تکایە بچۆرە ناو ئەپی FIB ـەکەتەوە و بڕی پارەکە بۆ ئەم ژمارەیە بنێرە:</p>
-<div class="fib-number">7515176569</div>
-<div class="notice">تکایە بڕی پارەکە بە وردی بنێرە.</div>
+    <label>ناوەڕۆک</label>
+    <textarea id="lBody"></textarea>
 
-<div class="warning">
-بەژداربووی بەڕێز ❤️<br>
-تکایە لە بڕی پارەکە و ژمارەکە دڵنیا ببەرەوە.<br>
-لە کاتی بە هەڵە ڕۆشتنی پارە بۆ هەر هەژمارێک، بەرپرسیار نین!
-</div>
-</div>
+    <button class="primary" id="addLesson">زیادکردنی وانە</button>
+   </div>
 
-<div id="paymentForm">
-<div class="form-group"><label>ناوی تەواو</label><input id="userName"></div>
-<div class="form-group"><label>ژمارەی مۆبایل</label><input id="userPhone"></div>
-<div class="form-group"><label>وێنەی رسید / مامەڵە</label><input id="receiptImage" type="file" accept="image/*"></div>
-<div class="form-group"><label>تێبینی</label><textarea id="message"></textarea></div>
+   <!-- زیادکردنی PDF -->
+   <div class="card">
+    <h3>زیادکردنی مەلزەمە PDF</h3>
 
-<button class="submit-btn" style="background:#00a85a" onclick="sendPayment()">📤 ناردنی وەسڵ بۆ ئەدمین</button>
-</div>
+    <label>پۆل</label>
+    <select id="pClass"></select>
 
-<div class="success" id="paymentSuccess">
-✅ داواکارییەکەت تۆمارکرا!<br>
-وەسڵەکەت نێردراوە بۆ پشکنین.
-</div>
+    <label>ناونیشان</label>
+    <input id="pTitle">
 
-</div>
-</div>
+    <label>فایلی PDF</label>
+    <input id="pFile" type="file" accept="application/pdf">
+
+    <button class="primary" id="addPdf">بارکردنی PDF</button>
+
+    <div class="muted" id="pdfStatus"></div>
+   </div>
+
+   <!-- زیادکردنی تاقیکردنەوە -->
+   <div class="card">
+    <h3>زیادکردنی تاقیکردنەوە</h3>
+
+    <label>پۆل</label>
+    <select id="qClass"></select>
+
+    <label>ناونیشانی تاقیکردنەوە</label>
+    <input id="qTitle">
+
+    <label>پرسیارەکان (JSON)</label>
+    <textarea id="qJson" placeholder='[{"question":"پرسیار؟","options":["A","B","C"],"answer":0}]'></textarea>
+
+    <button class="primary" id="addQuiz">زیادکردنی تاقیکردنەوە</button>
+
+    <p class="muted">
+     answer ژمارەی هەڵبژاردەی ڕاستە، لە سفرەوە دەستپێدەکات.
+    </p>
+   </div>
+
+   <!-- بەڕێوەبردنی پرسیارەکان -->
+   <div class="card">
+    <h3>بەڕێوەبردنی پرسیارەکان</h3>
+    <div id="adminQuestions">چاوەڕێ بکە...</div>
+   </div>
+
+  </div>
+ </div>
+
+</section>
+
+</main>
 
 <footer>
-<strong>XOSHNAW AI PREMIUM</strong><br><br>
-فێربوون • AI • Technology • Premium
+پەیمانگای وەرزشی شەقڵاوە · هەموو مافەکان پارێزراون
 </footer>
 
 <script>
-const SUPABASE_URL="https://wpjqvpcqaufrpstnziad.supabase.co";
-const SUPABASE_KEY="sb_publishable_9ALxJWahJqUFvtMXR7-5TA_XHBIF6ZK";
-const ADMIN_EMAIL="lawaking24@gmail.com";
 
-let supabaseClient=null;
-let currentUser=null;
-let currentProfile=null;
-let selectedPlan="";
-let selectedPrice=0;
+// URL ـی Cloudflare Worker ـەکەت لێرە دابنێ.
+window.API_BASE = "https://YOUR_WORKER_URL";
 
-function initSupabase(){
-if(!window.supabase){console.error("Supabase library نەهاتووە.");return false;}
-supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-return true;
+const API=(window.API_BASE||"").replace(/\/$/,"");
+const $=id=>document.getElementById(id);
+
+const classNames={
+ "1":"پۆلی یەکەم",
+ "2":"پۆلی دووەم",
+ "3":"پۆلی سێیەم",
+ "4":"پۆلی چوارەم",
+ "5":"پۆلی پێنجەم"
+};
+
+let adminKey="";
+let currentQuiz=null;
+let answers={};
+
+function selectedClass(){
+ return $("studentClass").value||localStorage.getItem("academyClass")||"";
 }
 
-function isAdmin(){
-return !!(currentUser&&currentUser.email&&currentUser.email.toLowerCase()===ADMIN_EMAIL.toLowerCase());
+function setClass(v){
+ $("studentClass").value=v;
+
+ if(v){
+  localStorage.setItem("academyClass",v);
+  $("classStatus").textContent=" پۆلەکەت پاشەکەوت کرا.";
+ }
 }
 
-function escapeHTML(value){
-if(value===null||value===undefined)return "";
-return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+function go(page){
+
+ document.querySelectorAll(".page").forEach(x=>{
+  x.classList.add("hidden");
+ });
+
+ $(page).classList.remove("hidden");
+
+ document.querySelectorAll(".tab").forEach(x=>{
+  x.classList.toggle("active",x.dataset.page===page);
+ });
+
+ if(page==="lessons")loadLessons();
+ if(page==="pdfs")loadPdfs();
+ if(page==="qa")loadQA();
+
 }
 
-function getPlanDays(plan){
-if(plan==="هەفتانە")return 7;
-if(plan==="مانگانە")return 30;
-if(plan==="ساڵانە")return 365;
-return 7;
+document.querySelectorAll("[data-page]").forEach(b=>{
+ b.addEventListener("click",()=>go(b.dataset.page));
+});
+
+document.querySelectorAll("[data-go]").forEach(b=>{
+ b.addEventListener("click",()=>go(b.dataset.go));
+});
+
+function esc(s){
+ return String(s??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+ }[c]));
 }
 
-function updateHeader(){
-const authButtons=document.getElementById("authButtons");
-const logoutArea=document.getElementById("logoutArea");
-if(!authButtons||!logoutArea)return;
-if(currentUser){authButtons.style.display="none";logoutArea.style.display="flex";}
-else{authButtons.style.display="flex";logoutArea.style.display="none";}
+async function api(path,opts={}){
+
+ const headers={...(opts.headers||{})};
+
+ if(adminKey){
+  headers["X-Admin-Secret"]=adminKey;
+ }
+
+ const r=await fetch(API+"/api"+path,{
+  ...opts,
+  headers
+ });
+
+ let d={};
+
+ try{
+  d=await r.json();
+ }catch{}
+
+ if(!r.ok){
+  throw Error(d.error||"هەڵەیەک ڕوویدا");
+ }
+
+ return d;
 }
 
-function openLogin(){
-closeAll();
-const modal=document.getElementById("loginModal");
-if(modal)modal.style.display="flex";
+$("saveClass").onclick=()=>{
+
+ if(!$("studentClass").value){
+  $("classStatus").textContent=" تکایە پۆل هەڵبژێرە";
+  return;
+ }
+
+ setClass($("studentClass").value);
+
+};
+
+function fillClassSelect(id){
+
+ $(id).innerHTML=Object.entries(classNames)
+ .map(([v,n])=>`<option value="${v}">${n}</option>`)
+ .join("");
+
 }
 
-function openRegister(){
-closeAll();
-const modal=document.getElementById("registerModal");
-if(modal)modal.style.display="flex";
+["lClass","pClass","qClass"].forEach(fillClassSelect);
+
+// بارکردنی وانەکان
+async function loadLessons(){
+
+ let box=$("lessonList");
+
+ try{
+
+  let d=await api("/lessons?class="+encodeURIComponent(selectedClass()));
+
+  box.innerHTML=d.items.length
+   ?d.items.map(x=>`
+    <div class="item">
+     <h4>${esc(x.title)}</h4>
+     <div>${esc(x.body).replace(/\n/g,"<br>")}</div>
+     <small class="muted">${esc(classNames[x.class_no]||"")}</small>
+    </div>
+   `).join("")
+   :"هیچ وانەیەک بۆ ئەم پۆلە زیاد نەکراوە.";
+
+ }catch(e){
+
+  box.textContent=e.message;
+
+ }
+
 }
 
-function closeAll(){
-const login=document.getElementById("loginModal");
-const register=document.getElementById("registerModal");
-const payment=document.getElementById("paymentModal");
-const forgot=document.getElementById("forgotPasswordModal");
-const reset=document.getElementById("resetPasswordModal");
-if(login)login.style.display="none";
-if(register)register.style.display="none";
-if(payment)payment.style.display="none";
-if(forgot)forgot.style.display="none";
-if(reset)reset.style.display="none";
+// بارکردنی PDF
+async function loadPdfs(){
+
+ let box=$("pdfList");
+
+ try{
+
+  let d=await api("/pdfs?class="+encodeURIComponent(selectedClass()));
+
+  box.innerHTML=d.items.length
+   ?d.items.map(x=>`
+    <div class="item">
+     <h4>📄 ${esc(x.title)}</h4>
+     <a href="${API}/api/files/${encodeURIComponent(x.id)}" target="_blank" rel="noopener">
+      کردنەوەی PDF
+     </a>
+    </div>
+   `).join("")
+   :"هیچ مەلزەمەیەک زیاد نەکراوە.";
+
+ }catch(e){
+
+  box.textContent=e.message;
+
+ }
+
 }
 
-function closePayment(){
-const payment=document.getElementById("paymentModal");
-if(payment)payment.style.display="none";
+// بارکردنی پرسیار و وەڵام
+async function loadQA(){
+
+ let box=$("qaList");
+
+ try{
+
+  let d=await api("/questions");
+
+  box.innerHTML=d.items.length
+   ?d.items.map(x=>`
+    <div class="item">
+     <b>${esc(x.name||"خوێندکار")}:</b>
+     <div>${esc(x.question)}</div>
+
+     ${x.answer
+      ?`<p class="success"><b>وەڵام:</b> ${esc(x.answer)}</p>`
+      :'<span class="pill">چاوەڕێی وەڵام</span>'
+     }
+
+    </div>
+   `).join("")
+   :"هێشتا پرسیارێک نییە.";
+
+ }catch(e){
+
+  box.textContent=e.message;
+
+ }
+
 }
 
-async function ensureProfile(){
-if(!currentUser)return null;
+// ناردنی پرسیار
+$("sendQuestion").onclick=async()=>{
 
-const {data,error}=await supabaseClient
-.from("profiles")
-.select("*")
-.eq("id",currentUser.id)
-.maybeSingle();
+ let question=$("newQuestion").value.trim();
 
-if(!error&&data){
-currentProfile=data;
-return data;
-}
+ if(!question){
+  return $("askStatus").textContent="پرسیارەکەت بنووسە.";
+ }
 
-const name=currentUser.user_metadata?.full_name||"";
+ try{
 
-const {error:createError}=await supabaseClient
-.from("profiles")
-.upsert({
-id:currentUser.id,
-full_name:name,
-is_admin:isAdmin(),
-premium_active:false
-},{onConflict:"id"});
-
-if(createError){
-console.error("PROFILE CREATE ERROR:",createError);
-currentProfile=null;
-return null;
-}
-
-const {data:createdProfile,error:readError}=await supabaseClient
-.from("profiles")
-.select("*")
-.eq("id",currentUser.id)
-.maybeSingle();
-
-if(readError){
-console.error("PROFILE READ ERROR:",readError);
-currentProfile=null;
-return null;
-}
-
-currentProfile=createdProfile;
-return createdProfile;
-}
-
-async function loadProfile(){
-if(!currentUser)return null;
-return await ensureProfile();
-}
-
-/* =========================
-PREMIUM ACCESS
-========================= */
-function hasPremium(){
-if(!currentProfile)return false;
-if(currentProfile.premium_active!==true)return false;
-
-if(currentProfile.premium_expires_at){
-const expires=new Date(currentProfile.premium_expires_at);
-if(!isNaN(expires.getTime()) && expires <= new Date()){
-return false;
-}
-}
-return true;
-}
-
-function renderPremiumContent(){
-const section=document.getElementById("premiumSection");
-const content=document.getElementById("premiumContent");
-const locked=document.getElementById("lockedPremium");
-const expiry=document.getElementById("premiumExpiry");
-
-if(!section||!content||!locked)return;
-
-if(!currentUser){
-section.style.display="none";
-return;
-}
-
-section.style.display="block";
-
-if(hasPremium()){
-content.style.display="block";
-locked.style.display="none";
-
-// ناوەڕۆکی Premium تەنها بۆ ئەندامی چالاک بار دەکرێت
-loadAIContent();
-
-if(expiry){
-if(currentProfile?.premium_expires_at){
-const d=new Date(currentProfile.premium_expires_at);
-expiry.textContent="📅 بەرواری کۆتایی Premium: "+d.toLocaleString("ku-IQ");
-}else{
-expiry.textContent="👑 Premium ـەکەت چالاکە.";
-}
-}
-}else{
-content.style.display="none";
-locked.style.display="block";
-// ئەگەر Premium چالاک نییە، هیچ ناوەڕۆکی تایبەت پیشان مەدە
-const area=document.getElementById("aiContentArea");
-if(area)area.innerHTML="";
-}
-}
-
-function showError(id,message){
-  const el=document.getElementById(id);
-  if(!el)return;
-  if(message){
-    el.innerHTML=escapeHTML(message).replace(/\n/g,"<br>");
-    el.style.display="block";
-  }else{
-    el.innerHTML="";
-    el.style.display="none";
-  }
-}
-
-function openModal(id){
-  closeAll();
-  const modal=document.getElementById(id);
-  if(modal)modal.style.display="flex";
-}
-
-async function registerUser(){
-  showError("registerError","");
-
-  if(!supabaseClient){
-    showError("registerError","❌ Supabase ئامادە نییە.");
-    return;
-  }
-
-  const name=document.getElementById("regName").value.trim();
-  const phone=document.getElementById("regPhone").value.trim();
-  const email=document.getElementById("regEmail").value.trim().toLowerCase();
-  const password=document.getElementById("regPassword").value;
-  const btn=document.getElementById("registerBtn");
-
-  if(!name||!phone||!email||!password){
-    showError("registerError","❌ تکایە هەموو خانەکان پڕ بکەرەوە.");
-    return;
-  }
-
-  if(password.length<6){
-    showError("registerError","❌ وشەی نهێنی دەبێت لانیکەم 6 پیت بێت.");
-    return;
-  }
-
-  if(btn){btn.disabled=true;btn.textContent="⏳ چاوەڕوان بە...";}
-
-  try{
-    const {data,error}=await supabaseClient.auth.signUp({
-      email:email,
-      password:password,
-      options:{
-        data:{full_name:name,phone:phone}
-      }
-    });
-
-    if(error){
-      let msg=error.message||"هەڵەیەک ڕوویدا.";
-      if(msg.toLowerCase().includes("rate limit")){
-        msg="❌ Supabase Rate Limit ـەکە پڕ بووە. تکایە هەندێک کات چاوەڕێ بکە و دووبارە هەوڵ مەدە زۆر بە زوویی.";
-      }else if(msg.toLowerCase().includes("already registered")||msg.toLowerCase().includes("already exists")){
-        msg="⚠️ ببورە، پێشتر ئەژمار لەسەر ئەم ئیمەیڵە دروست کراوە! تکایە Login بکە یان پاسۆڕدت ڕیسێت بکە.";
-      }
-      showError("registerError",msg);
-      return;
-    }
-
-    if(!data?.user){
-      showError("registerError","❌ Supabase هیچ User ـێکی دروست نەکرد. تکایە دووبارە هەوڵ بدەرەوە.");
-      return;
-    }
-
-    // ئەگەر Confirm Email OFF بێت، session هەیە و ڕاستەوخۆ Login دەبێت.
-    if(data.session){
-      currentUser=data.user;
-
-      // ئەگەر RLS ـی profiles ڕێگە نەدات، هێشتا ئەکاونتی Auth دروستکراوە.
-      await ensureProfile();
-
-      updateHeader();
-      closeAll();
-      await showDashboard();
-
-      alert("✅ ئەکاونتەکەت بە سەرکەوتوویی دروست کرا و چوویتە ژوورەوە.");
-    }else{
-      // Confirm Email ON ـە.
-      closeAll();
-      alert("⚠️ ئەکاونتەکە دروست کرا، بەڵام Confirm Email چالاکە.\n\nبۆ ئەوەی بەبێ پشتڕاستکردنەوەی ئیمەیڵ ڕاستەوخۆ Login بیت، Confirm Email لە Supabase بکە OFF.");
-      openModal("loginModal");
-    }
-  }catch(error){
-    console.error("REGISTER ERROR:",error);
-    showError("registerError","❌ هەڵەیەک ڕوویدا: "+(error?.message||error));
-  }finally{
-    if(btn){btn.disabled=false;btn.textContent="📝 تۆمارکردن";}
-  }
-}
-
-function openForgotPassword(){
-const loginEmail=document.getElementById("loginEmail")?.value.trim()||"";
-closeAll();
-const input=document.getElementById("forgotEmail");
-if(input)input.value=loginEmail;
-showError("forgotError","");
-const modal=document.getElementById("forgotPasswordModal");
-if(modal)modal.style.display="flex";
-}
-
-async function sendResetPassword(){
-showError("forgotError","");
-if(!supabaseClient){showError("forgotError","❌ Supabase ئامادە نییە.");return;}
-const email=document.getElementById("forgotEmail")?.value.trim().toLowerCase()||"";
-if(!email){showError("forgotError","❌ تکایە ئیمەیڵەکەت بنووسە.");return;}
-try{
-const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
-if(error){showError("forgotError","❌ ناردنی لینک سەرکەوتوو نەبوو: "+error.message);return;}
-showError("forgotError","✅ ئەگەر ئەم ئیمەیڵە ئەکاونتی هەبێت، لینکێکی ڕیسێت بۆی نێردراوە. Inbox و Spam ـەکەت بپشکنە.");
-}catch(error){showError("forgotError","❌ هەڵەیەک ڕوویدا: "+(error.message||error));}
-}
-
-async function updatePassword(){
-showError("resetError","");
-const password=document.getElementById("newPassword")?.value||"";
-const password2=document.getElementById("newPassword2")?.value||"";
-if(password.length<6){showError("resetError","❌ پاسۆڕد دەبێت لانیکەم 6 پیت بێت.");return;}
-if(password!==password2){showError("resetError","❌ دوو پاسۆڕدەکە یەکسان نین.");return;}
-try{
-const {error}=await supabaseClient.auth.updateUser({password:password});
-if(error){showError("resetError","❌ گۆڕینی پاسۆڕد سەرکەوتوو نەبوو: "+error.message);return;}
-alert("✅ پاسۆڕدەکەت بە سەرکەوتوویی گۆڕدرا.");
-closeAll();
-openLogin();
-}catch(error){showError("resetError","❌ هەڵەیەک ڕوویدا: "+(error.message||error));}
-}
-
-async function loginUser(){
-if(!supabaseClient){alert("❌ Supabase ئامادە نییە.");return;}
-
-const email=document.getElementById("loginEmail").value.trim();
-const password=document.getElementById("loginPassword").value;
-
-if(!email||!password){
-alert("❌ تکایە ئیمەیڵ و وشەی نهێنی بنووسە.");return;
-}
-
-try{
-const {data,error}=await supabaseClient.auth.signInWithPassword({email:email,password:password});
-
-if(error){
-alert("❌ Login سەرکەوتوو نەبوو:\n\n"+error.message);return;
-}
-
-currentUser=data.user;
-await loadProfile();
-updateHeader();
-closeAll();
-await showDashboard();
-
-}catch(error){
-alert("❌ هەڵەیەک ڕوویدا:\n\n"+(error.message||error));
-}
-}
-
-function categoryLabel(cat){
-  return cat==="AI TOOL"?"🤖 AI TOOL":cat==="APPS MODS AND HACK"?"📱 APPS MODS AND HACK":"🎬 FILM AND DRAMA";
-}
-
-async function signAIContentUrls(items,expiresIn=3600){
-  const list=Array.isArray(items)?items:[];
-  await Promise.all(list.map(async item=>{
-    item.signed_url=null;
-    if((item.type==="video"||item.type==="image")&&item.storage_path){
-      const {data,error}=await supabaseClient.storage.from("ai-content").createSignedUrl(item.storage_path,expiresIn);
-      if(error){
-        console.error("SIGNED URL ERROR:",item.title,error);
-        item.signed_url=null;
-        item.signed_url_error=error.message||String(error);
-        return;
-      }
-      item.signed_url=data?.signedUrl||null;
-    }
-  }));
-  return list;
-}
-
-async function loadAIContent(){
-  const area=document.getElementById("aiContentArea");
-  if(!area||!supabaseClient)return;
-  // تەنها ئەندامی Premium دەتوانێت ناوەڕۆکی زیادکراوی Admin ببینێت
-  if(!currentUser || !hasPremium()){
-    area.innerHTML="";
-    return;
-  }
-  const {data,error}=await supabaseClient.from("ai_content").select("*").eq("published",true).order("created_at",{ascending:false});
-  if(error){console.error(error);area.innerHTML="";return;}
-  await signAIContentUrls(data||[],86400);
-  const groups={"AI TOOL":[],"APPS MODS AND HACK":[],"FILM AND DRAMA":[]};
-  (data||[]).forEach(item=>{if(groups[item.category])groups[item.category].push(item);});
-  let html="";
-  Object.keys(groups).forEach(cat=>{
-    if(!groups[cat].length)return;
-    html+='<div class="content-category"><h2 class="section-title" style="margin-top:25px">'+categoryLabel(cat)+'</h2><div class="ai-content-grid">'+groups[cat].map(item=>renderAIContentCard(item,false)).join('')+'</div></div>';
+  await api("/questions",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    question,
+    name:$("askerName").value.trim()
+   })
   });
-  area.innerHTML=html;
-}
 
-async function refreshAIVideoUrl(videoEl,storagePath){
-  if(!videoEl||!storagePath||videoEl.dataset.retried==="1")return;
-  videoEl.dataset.retried="1";
-  try{
-    const {data,error}=await supabaseClient.storage.from("ai-content").createSignedUrl(storagePath,86400);
-    if(error||!data?.signedUrl)throw error||new Error("Signed URL نەدروستکرا");
-    videoEl.src=data.signedUrl;
-    videoEl.load();
-  }catch(e){
-    console.error("VIDEO OPEN ERROR:",e);
-    videoEl.insertAdjacentHTML("afterend",'<div class="error-box" style="margin-top:8px">❌ ڤیدیۆکە نەکرایەوە. تکایە پەڕەکە نوێ بکەرەوە.</div>');
+  $("newQuestion").value="";
+  $("askStatus").textContent="پرسیارەکەت نێردرا.";
+
+  loadQA();
+
+ }catch(e){
+
+  $("askStatus").textContent=e.message;
+
+ }
+
+};
+
+// دەستپێکردنی تاقیکردنەوە
+$("loadQuiz").onclick=async()=>{
+
+ let box=$("quizArea");
+
+ try{
+
+  let d=await api("/quizzes?class="+encodeURIComponent(selectedClass()));
+
+  if(!d.items.length){
+   box.textContent="تاقیکردنەوەیەک بۆ ئەم پۆلە ئامادە نییە.";
+   return;
   }
-}
 
-function renderAIContentCard(item,admin){
-  let media="";
-  const mediaUrl=item.signed_url||((item.type==="video"||item.type==="image")?item.file_url:null);
-  if(item.type==="video"&&mediaUrl) media='<video class="ai-content-media" controls preload="metadata" playsinline src="'+escapeHTML(mediaUrl)+'" onerror="refreshAIVideoUrl(this,\''+escapeHTML(item.storage_path||'')+'\')"></video>';
-  if(item.type==="image"&&mediaUrl) media='<img class="ai-content-media" loading="lazy" src="'+escapeHTML(mediaUrl)+'" alt="'+escapeHTML(item.title||"")+'">';
-  const link=(item.type==="text"&&item.file_url)?'<div style="margin-top:10px"><strong>📱 '+escapeHTML(item.app_name||item.title||"ئەپ")+'</strong><br><a class="download-link" href="'+escapeHTML(item.file_url)+'" target="_blank" rel="noopener noreferrer">⬇️ دابەزاندنی ئەپ</a></div>':"";
-  let del=admin ? '<button class="content-delete" onclick="deleteAIContent(\''+escapeHTML(item.id)+'\')">🗑️ سڕینەوە</button>' : "";
-  return '<article class="ai-content-card">'+media+'<div class="content-body"><small style="color:#2563eb;font-weight:800">'+categoryLabel(item.category)+'</small><h3>'+escapeHTML(item.app_name||item.title||"بەرنامە")+'</h3><p>'+escapeHTML(item.description||"")+'</p>'+link+del+'</div></article>';
-}
+  currentQuiz=d.items[0];
+  answers={};
 
-async function loadAdminAIContent(){
-  if(!isAdmin())return;
-  const box=document.getElementById("adminContentList");
-  if(!box)return;
-  const {data,error}=await supabaseClient.from("ai_content").select("*").order("created_at",{ascending:false});
-  if(error){box.innerHTML='<div class="error-box">❌ '+escapeHTML(error.message)+'</div>';return;}
-  if(!data||data.length===0){box.innerHTML='<div class="ai-content-empty">📭 هێشتا هیچ ناوەڕۆکێک زیاد نەکراوە.</div>';return;}
-  await signAIContentUrls(data,86400);
-  box.innerHTML='<h4 style="margin:15px 0">📚 ناوەڕۆکە زیادکراوەکان</h4><div class="ai-content-grid">'+data.map(x=>renderAIContentCard(x,true)).join('')+'</div>';
-}
+  renderQuiz();
 
-function toggleContentInput(){
-  const type=document.getElementById("contentType").value;
-  const fileGroup=document.getElementById("fileInputGroup");
-  const linkGroup=document.getElementById("linkInputGroup");
-  if(fileGroup)fileGroup.style.display=(type==="video"||type==="image")?"block":"none";
-  if(linkGroup)linkGroup.style.display=type==="link"?"block":"none";
-  const linkUrlGroup=document.getElementById("linkUrlGroup");
-  if(linkUrlGroup)linkUrlGroup.style.display=type==="link"?"block":"none";
-}
+ }catch(e){
 
-function showSelectedFileInfo(){
-  const input=document.getElementById("contentFile");
-  const info=document.getElementById("uploadInfo");
-  const file=input?.files?.[0];
-  if(!info)return;
-  if(!file){info.textContent="";return;}
-  const mb=(file.size/1024/1024).toFixed(1);
-  info.textContent=`📦 ${file.name} — ${mb} MB`;
-}
+  box.textContent=e.message;
 
-function setUploadProgress(percent,text){
-  const wrap=document.getElementById("uploadProgressWrap");
-  const bar=document.getElementById("uploadProgressBar");
-  const label=document.getElementById("uploadProgressText");
-  if(wrap)wrap.style.display="block";
-  if(label)label.style.display="block";
-  if(bar)bar.style.width=Math.max(0,Math.min(100,percent))+"%";
-  if(label)label.textContent=text||(`${Math.round(percent)}%`);
-}
+ }
 
-function resetUploadProgress(){
-  const wrap=document.getElementById("uploadProgressWrap");
-  const label=document.getElementById("uploadProgressText");
-  const bar=document.getElementById("uploadProgressBar");
-  if(wrap)wrap.style.display="none";
-  if(label)label.style.display="none";
-  if(bar)bar.style.width="0%";
-}
+};
 
-async function uploadVideoResumable(file,storagePath){
-  if(!window.tus) throw new Error("سیستەمی Upload ئامادە نییە. تکایە پەڕەکە نوێ بکەرەوە.");
-  const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
-  if(sessionError||!session?.access_token) throw new Error("Session ـی بەکارهێنەر بەردەست نییە. تکایە دووبارە بچۆ ژوورەوە.");
-  const projectId="wpjqvpcqaufrpstnziad";
-  const endpoint=`https://${projectId}.storage.supabase.co/storage/v1/upload/resumable`;
-  return new Promise((resolve,reject)=>{
-    let settled=false;
-    const finishError=(err)=>{if(settled)return;settled=true;reject(err instanceof Error?err:new Error(String(err||"Upload failed")));};
-    const upload=new tus.Upload(file,{
-      endpoint,
-      retryDelays:[0,3000,5000,10000,20000],
-      headers:{authorization:`Bearer ${session.access_token}`,'x-upsert':'false'},
-      metadata:{bucketName:"ai-content",objectName:storagePath,contentType:file.type,cacheControl:"31536000"},
-      chunkSize:6*1024*1024,
-      uploadDataDuringCreation:true,
-      removeFingerprintOnSuccess:true,
-      onError:error=>finishError(error),
-      onProgress:(uploaded,total)=>{
-        const pct=total?uploaded/total*100:0;
-        const done=(uploaded/1024/1024).toFixed(1);
-        const all=(total/1024/1024).toFixed(1);
-        setUploadProgress(pct,`⬆️ ${pct.toFixed(0)}% — ${done} / ${all} MB`);
-      },
-      onSuccess:()=>{
-        if(settled)return;
-        settled=true;
-        resolve(upload.url);
-      }
-    });
-    upload.findPreviousUploads().then(previous=>{
-      if(previous&&previous.length)upload.resumeFromPreviousUpload(previous[0]);
-      upload.start();
-    }).catch(finishError);
+// پیشاندانی پرسیارەکانی تاقیکردنەوە
+function renderQuiz(){
+
+ let q=currentQuiz.questions;
+ let box=$("quizArea");
+
+ box.innerHTML=`
+  <h3>${esc(currentQuiz.title)}</h3>
+ `+
+ q.map((x,i)=>`
+
+  <div class="question">
+
+   <b>${i+1}. ${esc(x.question)}</b>
+
+   ${x.options.map((o,j)=>`
+
+    <button
+     class="option ${answers[i]===j?"selected":""}"
+     data-q="${i}"
+     data-a="${j}"
+    >
+     ${esc(o)}
+    </button>
+
+   `).join("")}
+
+  </div>
+
+ `).join("")+
+ `
+  <button class="primary" id="finishQuiz">
+   تەواوکردن و بینینی ئەنجام
+  </button>
+
+  <div id="quizResult"></div>
+ `;
+
+ box.querySelectorAll("[data-q]").forEach(b=>{
+
+  b.onclick=()=>{
+
+   answers[b.dataset.q]=Number(b.dataset.a);
+
+   renderQuiz();
+
+  };
+
+ });
+
+ $("finishQuiz").onclick=()=>{
+
+  let score=q.reduce((n,x,i)=>{
+   return n+(answers[i]===x.answer?1:0);
+  },0);
+
+  $("quizResult").innerHTML=`
+   <h3 class="success">ئەنجام: ${score} لە ${q.length}</h3>
+  `;
+
+ };
+
+};
+
+// چوونەژوورەوەی بەڕێوەبەر
+$("adminConnect").onclick=async()=>{
+
+ adminKey=$("adminKey").value.trim();
+
+ try{
+
+  await api("/admin/check");
+
+  $("adminLogin").classList.add("hidden");
+  $("adminPanel").classList.remove("hidden");
+  $("adminStatus").textContent="";
+
+  loadAdminQuestions();
+
+ }catch(e){
+
+  adminKey="";
+  $("adminStatus").textContent="کلیلەکە هەڵەیە یان سێرڤەر ئامادە نییە.";
+
+ }
+
+};
+
+// زیادکردنی وانە
+$("addLesson").onclick=async()=>{
+
+ try{
+
+  await api("/admin/lessons",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    class_no:Number($("lClass").value),
+    title:$("lTitle").value,
+    body:$("lBody").value
+   })
   });
+
+  alert("وانەکە زیاد کرا.");
+
+  $("lTitle").value="";
+  $("lBody").value="";
+
+ }catch(e){
+
+  alert(e.message);
+
+ }
+
+};
+
+// زیادکردنی PDF
+$("addPdf").onclick=async()=>{
+
+ let f=$("pFile").files[0];
+
+ if(!f){
+  return $("pdfStatus").textContent="فایلی PDF هەڵبژێرە.";
+ }
+
+ if(f.type!=="application/pdf"){
+  return $("pdfStatus").textContent="تەنها PDF ڕێگەپێدراوە.";
+ }
+
+ let fd=new FormData();
+
+ fd.append("file",f);
+ fd.append("title",$("pTitle").value);
+ fd.append("class_no",$("pClass").value);
+
+ try{
+
+  await api("/admin/pdfs",{
+   method:"POST",
+   body:fd
+  });
+
+  $("pdfStatus").textContent="PDF بارکرا.";
+
+  $("pFile").value="";
+  $("pTitle").value="";
+
+ }catch(e){
+
+  $("pdfStatus").textContent=e.message;
+
+ }
+
+};
+
+// زیادکردنی تاقیکردنەوە
+$("addQuiz").onclick=async()=>{
+
+ try{
+
+  let questions=JSON.parse($("qJson").value);
+
+  await api("/admin/quizzes",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    class_no:Number($("qClass").value),
+    title:$("qTitle").value,
+    questions
+   })
+  });
+
+  alert("تاقیکردنەوە زیاد کرا.");
+
+ }catch(e){
+
+  alert("JSON یان داتا هەڵەیە: "+e.message);
+
+ }
+
+};
+
+// بارکردنی پرسیارەکان بۆ بەڕێوەبەر
+async function loadAdminQuestions(){
+
+ try{
+
+  let d=await api("/admin/questions");
+
+  $("adminQuestions").innerHTML=d.items.map(x=>`
+
+   <div class="item">
+
+    <b>${esc(x.name||"خوێندکار")}</b>
+
+    <p>${esc(x.question)}</p>
+
+    <textarea id="ans${x.id}" placeholder="وەڵام...">${esc(x.answer||"")}</textarea>
+
+    <button class="secondary" onclick="answerQuestion(${x.id})">
+     پاشەکەوتی وەڵام
+    </button>
+
+    <button class="danger" onclick="deleteQuestion(${x.id})">
+     سڕینەوە
+    </button>
+
+   </div>
+
+  `).join("")||"پرسیار نییە.";
+
+ }catch(e){
+
+  $("adminQuestions").textContent=e.message;
+
+ }
+
 }
 
-async function addAIContent(){
-  if(!isAdmin()){alert("❌ تەنها ئەدمین دەتوانێت ناوەڕۆک زیاد بکات.");return;}
-  const title=document.getElementById("contentTitle").value.trim();
-  const category=document.getElementById("contentCategory").value;
-  const selectedType=document.getElementById("contentType").value;
-  const type=selectedType==="link"?"text":selectedType;
-  const description=document.getElementById("contentDescription").value.trim();
-  const appName=(document.getElementById("appName")?.value||"").trim();
-  const fileInput=document.getElementById("contentFile");
-  const msg=document.getElementById("contentAdminMessage");
-  const button=document.querySelector('.ai-admin-tools .submit-btn');
-  showError("contentAdminMessage","");
-  resetUploadProgress();
-  if(!title){showError("contentAdminMessage","❌ تکایە ناونیشان بنووسە.");return;}
-  if(selectedType==="link" && !appName){showError("contentAdminMessage","❌ تکایە ناوی ئەپ بنووسە.");return;}
-  let fileUrl=null,storagePath=null;
-  try{
-    if(selectedType==="link"){
-      const link=document.getElementById("contentLink").value.trim();
-      if(!/^https?:\/\/\S+$/i.test(link)){showError("contentAdminMessage","❌ تکایە لینکێکی دروست بنووسە.");return;}
-      fileUrl=link;
-    }else if(type!=="text"){
-      const file=fileInput.files[0];
-      if(!file){showError("contentAdminMessage","❌ تکایە فایل هەڵبژێرە.");return;}
-      const max=type==="video"?500*1024*1024:15*1024*1024;
-      if(file.size>max){showError("contentAdminMessage",type==="video"?"❌ ڤیدیۆکە لە 500MB زیاترە.":"❌ وێنەکە لە 15MB زیاترە.");return;}
-      if(!file.type.startsWith(type+"/")){showError("contentAdminMessage","❌ جۆری فایل لەگەڵ جۆری ناوەڕۆک ناگونجێت.");return;}
-      const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-      storagePath=category.replace(/[^A-Z0-9]+/gi,"_")+"/"+Date.now()+"_"+Math.random().toString(36).slice(2)+"_"+safeName;
-      if(button){button.disabled=true;button.textContent="⏳ ناردن...";}
-      if(type==="video"){
-        setUploadProgress(0,"⬆️ ئامادەکردنی Upload...");
-        await uploadVideoResumable(file,storagePath);
-      }else{
-        setUploadProgress(0,"⬆️ ناردنی وێنە...");
-        const {error:upErr}=await supabaseClient.storage.from("ai-content").upload(storagePath,file,{upsert:false,contentType:file.type,cacheControl:"31536000"});
-        if(upErr)throw upErr;
-        setUploadProgress(100,"✅ وێنە نێردرا");
-      }
-      // Bucket ـەکە Private ـە؛ بۆ ڤیدیۆ/وێنە public URL بەکارناهێنین.
-      // storage_path لە DB هەڵدەگیرێت و کاتێک Premium ناوەڕۆک دەبینێت Signed URL دروست دەکرێت.
-      fileUrl=null;
-    }
-    const {error}=await supabaseClient.from("ai_content").insert({title,description,type,category,app_name:appName||null,file_url:fileUrl,storage_path:storagePath,published:true,created_by:currentUser.id});
-    if(error)throw error;
-    document.getElementById("contentTitle").value="";
-    document.getElementById("contentDescription").value="";
-    document.getElementById("contentFile").value="";
-    document.getElementById("contentLink").value="";
-    if(document.getElementById("appName"))document.getElementById("appName").value="";
-    document.getElementById("uploadInfo").textContent="";
-    setUploadProgress(100,"✅ ناوەڕۆک بە سەرکەوتوویی زیاد کرا");
-    alert("✅ ناوەڕۆکەکە لە بەشی "+category+" زیاد کرا.");
-    await loadAdminAIContent();
-    await loadAIContent();
-    setTimeout(resetUploadProgress,1200);
-  }catch(error){
-    if(storagePath){try{await supabaseClient.storage.from("ai-content").remove([storagePath]);}catch(e){}}
-    showError("contentAdminMessage","❌ Upload سەرکەوتوو نەبوو: "+(error?.message||error)+"\n\nئەگەر ڤیدیۆکە گەورەیە، ئەم سیستەمە TUS بە 6MB chunk بەکاردێنێت و دەتوانێت Upload لە شوێنی پچڕانەوە بەردەوام بکات.");
-    resetUploadProgress();
-  }finally{
-    if(button){button.disabled=false;button.textContent="➕ زیادکردنی ناوەڕۆک";}
-  }
+// وەڵامدانەوەی پرسیار
+window.answerQuestion=async id=>{
+
+ try{
+
+  await api("/admin/questions/"+id,{
+   method:"PATCH",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    answer:$("ans"+id).value
+   })
+  });
+
+  loadAdminQuestions();
+
+ }catch(e){
+
+  alert(e.message);
+
+ }
+
+};
+
+// سڕینەوەی پرسیار
+window.deleteQuestion=async id=>{
+
+ if(!confirm("دڵنیایت لە سڕینەوە؟"))return;
+
+ try{
+
+  await api("/admin/questions/"+id,{
+   method:"DELETE"
+  });
+
+  loadAdminQuestions();
+
+ }catch(e){
+
+  alert(e.message);
+
+ }
+
+};
+
+// پاشەکەوتکردنی پۆلی خوێندکار
+let saved=localStorage.getItem("academyClass");
+
+if(saved){
+ $("studentClass").value=saved;
 }
 
-async function deleteAIContent(id){
-  if(!isAdmin())return;
-  if(!confirm("دڵنیایت لە سڕینەوەی ئەم ناوەڕۆکە؟"))return;
-  const {data:item}=await supabaseClient.from("ai_content").select("storage_path").eq("id",id).maybeSingle();
-  if(item?.storage_path){await supabaseClient.storage.from("ai-content").remove([item.storage_path]);}
-  const {error}=await supabaseClient.from("ai_content").delete().eq("id",id);
-  if(error){alert("❌ سڕینەوە سەرکەوتوو نەبوو: "+error.message);return;}
-  await loadAdminAIContent();await loadAIContent();
-}
-
-async function showDashboard(){
-if(!currentUser)return;
-
-await loadProfile();
-
-const dashboard=document.getElementById("dashboard");
-if(!dashboard)return;
-
-dashboard.style.display="block";
-
-const name=currentProfile?.full_name||currentUser.user_metadata?.full_name||currentUser.email;
-const dashboardName=document.getElementById("dashboardName");
-if(dashboardName)dashboardName.textContent="سڵاو "+name;
-
-const adminBox=document.getElementById("adminBox");
-
-if(isAdmin()){
-if(adminBox)adminBox.style.display="block";
-await loadAdminRequests();
-await loadAdminAIContent();
-}else{
-if(adminBox)adminBox.style.display="none";
-}
-
-const status=document.getElementById("premiumStatus");
-const plan=document.getElementById("dashboardPlan");
-
-if(hasPremium()){
-if(status){
-status.className="status active";
-status.innerHTML="👑 Premium ـەکەت چالاکە.";
-}
-if(plan){
-let expiryText="";
-if(currentProfile?.premium_expires_at){
-expiryText="<br><strong>کۆتایی:</strong> "+escapeHTML(new Date(currentProfile.premium_expires_at).toLocaleString("ku-IQ"));
-}
-plan.innerHTML="<p><strong>پلان:</strong> "+escapeHTML(currentProfile.premium_plan||"")+expiryText+"</p>";
-}
-}else{
-if(status){
-status.className="status pending";
-status.innerHTML="Premium هێشتا چالاک نەکراوە.";
-}
-if(plan)plan.innerHTML="";
-}
-
-if(!isAdmin())await loadMyPayments();
-else{
-const myPayments=document.getElementById("myPayments");
-if(myPayments)myPayments.innerHTML="";
-}
-
-renderPremiumContent();
-}
-
-async function loadAdminRequests(){
-if(!isAdmin())return;
-
-const box=document.getElementById("adminRequests");
-if(!box)return;
-
-box.innerHTML="⏳ داواکارییەکان بار دەکرێن...";
-
-const {data,error}=await supabaseClient
-.from("payment_requests")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(error){
-console.error(error);
-box.innerHTML="<div class='empty'>❌ هەڵە:<br>"+escapeHTML(error.message)+"</div>";
-return;
-}
-
-if(!data||data.length===0){
-box.innerHTML="<div class='empty'>📭 هیچ داواکارییەک نییە.</div>";
-return;
-}
-
-let html="";
-
-data.forEach(item=>{
-const created=item.created_at?new Date(item.created_at).toLocaleString("ku-IQ"):"";
-let statusText="⏳ چاوەڕوان";
-if(item.status==="accepted")statusText="✅ پەسەندکراو";
-if(item.status==="rejected")statusText="❌ ڕەتکراوە";
-
-html+="<div class='admin-request'>"+
-"<strong>👤 ناو:</strong> "+escapeHTML(item.full_name||"")+"<br>"+
-"<strong>📧 ئیمەیڵ:</strong> "+escapeHTML(item.email||"")+"<br>"+
-"<strong>📱 مۆبایل:</strong> "+escapeHTML(item.phone||"")+"<br>"+
-"<strong>🆔 User ID:</strong><br>"+escapeHTML(item.user_id)+"<br><br>"+
-"<strong>👑 پلان:</strong> "+escapeHTML(item.plan||"")+"<br>"+
-"<strong>💰 بڕ:</strong> "+escapeHTML(item.amount||"")+" د.ع<br>"+
-"<strong>📅 کات:</strong> "+escapeHTML(created)+"<br>"+
-"<strong>📌 دۆخ:</strong> "+statusText+"<br>";
-
-if(item.receipt_url){
-html+="<a class='receipt-btn' href='"+escapeHTML(item.receipt_url)+"' target='_blank'>📷 بینینی وەسڵ</a>";
-}
-
-if(item.status==="pending"){
-html+="<div style='margin-top:10px'>"+
-"<button class='accept-btn' onclick=\"acceptPayment('"+escapeHTML(item.id)+"','"+escapeHTML(item.user_id)+"','"+escapeHTML(item.plan)+"')\">✅ پەسەندکردن</button>"+
-"<button class='reject-btn' onclick=\"rejectPayment('"+escapeHTML(item.id)+"')\">❌ ڕەتکردنەوە</button>"+
-"</div>";
-}
-
-html+="</div>";
-});
-
-box.innerHTML=html;
-}
-
-async function activateUserPremium(userId,plan){
-const days=getPlanDays(plan);
-const expires=new Date();
-expires.setDate(expires.getDate()+days);
-
-const {error}=await supabaseClient
-.from("profiles")
-.upsert({
-id:userId,
-premium_active:true,
-premium_plan:plan,
-premium_expires_at:expires.toISOString()
-},{onConflict:"id"});
-
-if(error){
-console.error("PREMIUM UPDATE ERROR:",error);
-return {success:false,error:error.message};
-}
-
-const {data,error:readError}=await supabaseClient
-.from("profiles")
-.select("*")
-.eq("id",userId)
-.maybeSingle();
-
-if(readError)return {success:false,error:readError.message};
-if(!data)return {success:false,error:"Profile ـی بەکارهێنەر نەدۆزرایەوە."};
-
-return {success:true,data:data};
-}
-
-async function acceptPayment(paymentId,userId,plan){
-if(!isAdmin()){alert("❌ تەنها Admin دەتوانێت.");return;}
-
-if(!confirm("ئایا دڵنیایت لە پەسەندکردنی ئەم داواکارییە؟"))return;
-
-const premiumResult=await activateUserPremium(userId,plan);
-
-if(!premiumResult.success){
-alert("❌ وەسڵەکە پەسەند نەکرا.\n\n"+premiumResult.error);
-return;
-}
-
-const {error:paymentError}=await supabaseClient
-.from("payment_requests")
-.update({status:"accepted"})
-.eq("id",paymentId);
-
-if(paymentError){
-alert("❌ Premium چالاک بوو، بەڵام دۆخی وەسڵ نەگۆڕدرا:\n\n"+paymentError.message);
-return;
-}
-
-alert("✅ وەسڵەکە پەسەند کرا!\n\n👑 Premium ـی بەکارهێنەر چالاک کرا.\n\nپلان: "+plan);
-await loadAdminRequests();
-}
-
-async function rejectPayment(paymentId){
-if(!isAdmin()){alert("❌ تەنها Admin دەتوانێت.");return;}
-if(!confirm("ئایا دڵنیایت لە ڕەتکردنەوەی ئەم داواکارییە؟"))return;
-
-const {error}=await supabaseClient
-.from("payment_requests")
-.update({status:"rejected"})
-.eq("id",paymentId);
-
-if(error){
-alert("❌ ڕەتکردنەوە سەرکەوتوو نەبوو:\n\n"+error.message);return;
-}
-
-alert("❌ داواکارییەکە ڕەتکرایەوە.");
-await loadAdminRequests();
-}
-
-/* =========================
-ADMIN FREE PREMIUM
-========================= */
-async function activateAdminPremium(plan){
-if(!isAdmin())return;
-
-const days=getPlanDays(plan);
-const expires=new Date();
-expires.setDate(expires.getDate()+days);
-
-const {data,error}=await supabaseClient
-.from("profiles")
-.update({
-is_admin:true,
-premium_active:true,
-premium_plan:plan,
-premium_expires_at:expires.toISOString()
-})
-.eq("id",currentUser.id)
-.select("*")
-.maybeSingle();
-
-if(error){
-alert("❌ Premium ـی Admin چالاک نەکرا:\n\n"+error.message);
-console.error("ADMIN PREMIUM ERROR:",error);
-return;
-}
-
-if(!data){
-alert("❌ Profile ـی Admin نەدۆزرایەوە.\n\nتکایە Logout بکە و دووبارە Login بکە.");
-return;
-}
-
-currentProfile=data;
-
-alert("👑 Premium ـی Admin بە سەرکەوتوویی چالاک کرا!\n\nپلان: "+plan+"\n\nپارەدان پێویست نییە.");
-
-await showDashboard();
-renderPremiumContent();
-
-/* ڕاستەوخۆ بۆ بەشی Premium دەچێت */
-setTimeout(()=>{
-const section=document.getElementById("premiumSection");
-if(section)section.scrollIntoView({behavior:"smooth"});
-},200);
-}
-
-async function choosePlan(plan,price){
-if(!currentUser){
-alert("❌ تکایە سەرەتا Login بکە.");
-openLogin();
-return;
-}
-
-selectedPlan=plan;
-selectedPrice=Number(price);
-
-/* ADMIN = FREE */
-if(isAdmin()){
-await activateAdminPremium(plan);
-return;
-}
-
-/* NORMAL USER */
-const selectedPlanEl=document.getElementById("selectedPlan");
-const selectedPriceEl=document.getElementById("selectedPrice");
-const userName=document.getElementById("userName");
-const userPhone=document.getElementById("userPhone");
-
-if(selectedPlanEl)selectedPlanEl.textContent=plan;
-if(selectedPriceEl)selectedPriceEl.textContent=selectedPrice.toLocaleString("en-US");
-
-if(userName)userName.value=currentProfile?.full_name||currentUser.user_metadata?.full_name||"";
-if(userPhone)userPhone.value=currentUser.user_metadata?.phone||"";
-
-const receiptImage=document.getElementById("receiptImage");
-const message=document.getElementById("message");
-if(receiptImage)receiptImage.value="";
-if(message)message.value="";
-
-const paymentForm=document.getElementById("paymentForm");
-const paymentSuccess=document.getElementById("paymentSuccess");
-const paymentModal=document.getElementById("paymentModal");
-
-if(paymentForm)paymentForm.style.display="block";
-if(paymentSuccess)paymentSuccess.style.display="none";
-if(paymentModal)paymentModal.style.display="flex";
-}
-
-async function sendPayment(){
-if(!currentUser){alert("❌ تکایە Login بکە.");return;}
-
-if(isAdmin()){
-alert("👑 تۆ Admin ـیت.\n\nPremium ـەکەت بێ پارەدان چالاک دەکرێت.");
-return;
-}
-
-if(!selectedPlan){alert("❌ تکایە پلانێک هەڵبژێرە.");return;}
-
-const name=document.getElementById("userName").value.trim();
-const phone=document.getElementById("userPhone").value.trim();
-const file=document.getElementById("receiptImage").files[0];
-
-if(!name||!phone){
-alert("❌ تکایە ناو و ژمارەی مۆبایل پڕ بکەرەوە.");return;
-}
-
-if(!file){
-alert("❌ تکایە وێنەی وەسڵ دابنێ.");return;
-}
-
-if(file.size>5*1024*1024){
-alert("❌ قەبارەی وێنەکە زۆرە. کەمتر لە 5MB بێت.");return;
-}
-
-try{
-const extension=file.name.split(".").pop().toLowerCase();
-const fileName=currentUser.id+"_"+Date.now()+"."+extension;
-
-const {error:uploadError}=await supabaseClient.storage
-.from("receipts")
-.upload(fileName,file,{
-cacheControl:"3600",
-upsert:false,
-contentType:file.type
-});
-
-if(uploadError){
-alert("❌ ناردنی وەسڵ سەرکەوتوو نەبوو:\n\n"+uploadError.message);
-return;
-}
-
-const {data:urlData}=supabaseClient.storage
-.from("receipts")
-.getPublicUrl(fileName);
-
-const receiptUrl=urlData?.publicUrl||"";
-
-if(!receiptUrl){
-alert("❌ لینکی وەسڵ دروست نەکرا.");return;
-}
-
-const {error}=await supabaseClient
-.from("payment_requests")
-.insert({
-user_id:currentUser.id,
-full_name:name,
-email:currentUser.email||"",
-phone:phone,
-plan:selectedPlan,
-amount:selectedPrice,
-receipt_url:receiptUrl,
-status:"pending"
-});
-
-if(error){
-alert("❌ داواکارییەکە نەنێردرا:\n\n"+error.message);
-return;
-}
-
-const paymentForm=document.getElementById("paymentForm");
-const paymentSuccess=document.getElementById("paymentSuccess");
-
-if(paymentForm)paymentForm.style.display="none";
-if(paymentSuccess)paymentSuccess.style.display="block";
-
-await loadMyPayments();
-
-}catch(error){
-alert("❌ هەڵەیەک ڕوویدا:\n\n"+(error.message||error));
-}
-}
-
-async function loadMyPayments(){
-const box=document.getElementById("myPayments");
-if(!box||!currentUser)return;
-
-const {data,error}=await supabaseClient
-.from("payment_requests")
-.select("*")
-.eq("user_id",currentUser.id)
-.order("created_at",{ascending:false});
-
-if(error){console.error(error);box.innerHTML="";return;}
-
-if(!data||data.length===0){
-box.innerHTML="<p style='color:#777'>هیچ داواکارییەکت نییە.</p>";
-return;
-}
-
-let html="<h3 style='margin-bottom:12px'>📋 داواکارییەکانت</h3>";
-
-data.forEach(item=>{
-let status="⏳ چاوەڕوان";
-if(item.status==="accepted")status="✅ پەسەندکراو";
-if(item.status==="rejected")status="❌ ڕەتکرایەوە";
-
-html+="<div class='payment-item'>"+
-"<strong>پلان:</strong> "+escapeHTML(item.plan||"")+"<br>"+
-"<strong>بڕ:</strong> "+escapeHTML(item.amount||"")+" د.ع<br>"+
-"<strong>دۆخ:</strong> "+status+
-"</div>";
-});
-
-box.innerHTML=html;
-}
-
-async function logout(){
-if(!supabaseClient)return;
-
-const answer=confirm("🚪 ئایا دڵنیایت لە چوونەدەرەوە؟");
-if(!answer)return;
-
-const {error}=await supabaseClient.auth.signOut();
-
-if(error){
-alert("❌ چوونەدەرەوە سەرکەوتوو نەبوو:\n\n"+error.message);
-return;
-}
-
-currentUser=null;
-currentProfile=null;
-
-const dashboard=document.getElementById("dashboard");
-if(dashboard)dashboard.style.display="none";
-
-const section=document.getElementById("premiumSection");
-if(section)section.style.display="none";
-
-updateHeader();
-}
-
-function scrollToPlans(){
-const plans=document.getElementById("plans");
-if(plans)plans.scrollIntoView({behavior:"smooth"});
-}
-
-document.addEventListener("click",function(e){
-if(e.target&&e.target.classList&&e.target.classList.contains("modal")){
-e.target.style.display="none";
-}
-});
-
-function setupAuthListener(){
-if(!supabaseClient)return;
-
-supabaseClient.auth.onAuthStateChange((event,session)=>{
-if(event === "PASSWORD_RECOVERY"){
-currentUser=session?.user||currentUser;
-updateHeader();
-setTimeout(()=>{
-closeAll();
-const modal=document.getElementById("resetPasswordModal");
-if(modal)modal.style.display="flex";
-},100);
-return;
-}
-if(session?.user){
-currentUser=session.user;
-updateHeader();
-
-setTimeout(async()=>{
-await loadProfile();
-await showDashboard();
-},100);
-}else{
-currentUser=null;
-currentProfile=null;
-updateHeader();
-
-const dashboard=document.getElementById("dashboard");
-if(dashboard)dashboard.style.display="none";
-
-const section=document.getElementById("premiumSection");
-if(section)section.style.display="none";
-}
-});
-}
-
-async function startApp(){
-try{
-if(!initSupabase()){
-alert("❌ Supabase نەکرایەوە.");
-return;
-}
-
-setupAuthListener();
-
-const {data,error}=await supabaseClient.auth.getSession();
-
-if(error){
-console.error("SESSION ERROR:",error);
-return;
-}
-
-if(data?.session?.user){
-currentUser=data.session.user;
-await loadProfile();
-updateHeader();
-await showDashboard();
-}else{
-currentUser=null;
-currentProfile=null;
-updateHeader();
-}
-}catch(error){
-console.error("START APP ERROR:",error);
-}
-}
-
-startApp();
 </script>
 
 </body>
