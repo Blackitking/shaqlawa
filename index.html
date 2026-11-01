@@ -62,7 +62,6 @@ h1{font-size:18px}
 
 <header>
 <div class="wrap">
-
  <div class="brand">
   <div class="logo">🏅</div>
   <div>
@@ -79,25 +78,20 @@ h1{font-size:18px}
   <button class="tab" data-page="quiz">تاقیکردنەوە</button>
   <button class="tab" data-page="admin">بەڕێوەبەر</button>
  </nav>
-
 </div>
 </header>
 
 <main class="wrap">
 
-<!-- سەرەتا -->
 <section id="home" class="page">
-
  <div class="hero">
   <h2>بەخێربێیت بۆ پەیمانگای وەرزشی شەقڵاوە</h2>
-
   <p class="muted">
    پۆلەکەت هەڵبژێرە بۆ بینینی وانە و مەلزەمە و تاقیکردنەوەکان.
    هەموو زانیارییەکان لە سێرڤەری هاوبەش پاشەکەوت دەکرێن.
   </p>
 
   <label for="studentClass">پۆلی خوێندکار</label>
-
   <select id="studentClass">
    <option value="">پۆل هەڵبژێرە</option>
    <option value="1">پۆلی یەکەم</option>
@@ -112,7 +106,6 @@ h1{font-size:18px}
  </div>
 
  <div class="grid">
-
   <div class="card">
    <h3>📚 وانەکان</h3>
    <p class="muted">وانەکانی پۆلەکەت بخوێنەوە.</p>
@@ -130,11 +123,9 @@ h1{font-size:18px}
    <p class="muted">ئاستی خۆت تاقی بکەرەوە.</p>
    <button class="secondary" data-go="quiz">دەستپێکردن</button>
   </div>
-
  </div>
 </section>
 
-<!-- وانەکان -->
 <section id="lessons" class="page hidden">
  <div class="hero">
   <h2>وانەکان</h2>
@@ -143,7 +134,6 @@ h1{font-size:18px}
  <div id="lessonList" class="card">چاوەڕێ بکە...</div>
 </section>
 
-<!-- PDF -->
 <section id="pdfs" class="page hidden">
  <div class="hero">
   <h2>مەلزەمە PDF</h2>
@@ -152,50 +142,36 @@ h1{font-size:18px}
  <div id="pdfList" class="card">چاوەڕێ بکە...</div>
 </section>
 
-<!-- پرسیار و وەڵام -->
 <section id="qa" class="page hidden">
-
  <div class="hero">
   <h2>پرسیار و وەڵام</h2>
   <p class="muted">پرسیارەکان بخوێنەوە یان پرسیارێکی نوێ بنێرە.</p>
  </div>
 
  <div class="card">
-
   <label>پرسیارەکەت</label>
   <textarea id="newQuestion" placeholder="پرسیارەکەت لێرە بنووسە..."></textarea>
-
   <label>ناوت (ئارەزوومەندانە)</label>
   <input id="askerName" placeholder="ناو">
-
   <button class="primary" id="sendQuestion">ناردنی پرسیار</button>
-
   <div id="askStatus" class="muted"></div>
-
  </div>
 
  <div id="qaList" class="card" style="margin-top:13px">چاوەڕێ بکە...</div>
-
 </section>
 
-<!-- تاقیکردنەوە -->
 <section id="quiz" class="page hidden">
-
  <div class="hero">
   <h2>تاقیکردنەوەی ئۆنلاین</h2>
   <p class="muted">تاقیکردنەوەی پۆلەکەت دەستپێبکە.</p>
   <button class="primary" id="loadQuiz">دەستپێکردنی تاقیکردنەوە</button>
  </div>
-
  <div id="quizArea" class="card">
   تاقیکردنەوەیەک هەڵبژێردراو نییە یان ئامادە نییە.
  </div>
-
 </section>
 
-<!-- بەڕێوەبەر -->
 <section id="admin" class="page hidden">
-
  <div class="hero">
   <h2>بەشی بەڕێوەبەر</h2>
   <p class="muted">
@@ -204,87 +180,59 @@ h1{font-size:18px}
  </div>
 
  <div class="card" id="adminLogin">
-
   <label>کلیلی بەڕێوەبەر (ADMIN_SECRET)</label>
   <input id="adminKey" type="password" autocomplete="off" placeholder="کلیلی بەڕێوەبەر">
-
   <button class="primary" id="adminConnect">چوونەژوورەوە</button>
-
   <div id="adminStatus" class="muted"></div>
-
  </div>
 
  <div id="adminPanel" class="hidden">
-
   <div class="notice">
    کلیلەکە تەنها لە مۆبایلی خۆت بەکاربهێنە و لە کەسی تر مەیدە.
   </div>
 
   <div class="admin-grid">
-
-   <!-- زیادکردنی وانە -->
    <div class="card">
     <h3>زیادکردنی وانە</h3>
-
     <label>پۆل</label>
     <select id="lClass"></select>
-
     <label>ناونیشان</label>
     <input id="lTitle">
-
     <label>ناوەڕۆک</label>
     <textarea id="lBody"></textarea>
-
     <button class="primary" id="addLesson">زیادکردنی وانە</button>
    </div>
 
-   <!-- زیادکردنی PDF -->
    <div class="card">
     <h3>زیادکردنی مەلزەمە PDF</h3>
-
     <label>پۆل</label>
     <select id="pClass"></select>
-
     <label>ناونیشان</label>
     <input id="pTitle">
-
     <label>فایلی PDF</label>
     <input id="pFile" type="file" accept="application/pdf">
-
     <button class="primary" id="addPdf">بارکردنی PDF</button>
-
     <div class="muted" id="pdfStatus"></div>
    </div>
 
-   <!-- زیادکردنی تاقیکردنەوە -->
    <div class="card">
     <h3>زیادکردنی تاقیکردنەوە</h3>
-
     <label>پۆل</label>
     <select id="qClass"></select>
-
     <label>ناونیشانی تاقیکردنەوە</label>
     <input id="qTitle">
-
     <label>پرسیارەکان (JSON)</label>
     <textarea id="qJson" placeholder='[{"question":"پرسیار؟","options":["A","B","C"],"answer":0}]'></textarea>
-
     <button class="primary" id="addQuiz">زیادکردنی تاقیکردنەوە</button>
-
-    <p class="muted">
-     answer ژمارەی هەڵبژاردەی ڕاستە، لە سفرەوە دەستپێدەکات.
-    </p>
+    <p class="muted">answer ژمارەی هەڵبژاردەی ڕاستە، لە سفرەوە دەستپێدەکات.</p>
    </div>
 
-   <!-- بەڕێوەبردنی پرسیارەکان -->
    <div class="card">
     <h3>بەڕێوەبردنی پرسیارەکان</h3>
     <div id="adminQuestions">چاوەڕێ بکە...</div>
    </div>
-
   </div>
  </div>
-
 </section>
 
 </main>
@@ -295,10 +243,10 @@ h1{font-size:18px}
 
 <script>
 
-// URL ـی Cloudflare Worker ـەکەت لێرە دابنێ.
-window.API_BASE = "https://YOUR_WORKER_URL";
+// لینکی ڕاستەقینەی Cloudflare Worker
+window.API_BASE = "https://xoshnaw-bazar-premium.lawaking24.workers.dev";
 
-const API=(window.API_BASE||"").replace(/\/$/,"");
+const API=(window.API_BASE||"").replace(/\/+$/,"");
 const $=id=>document.getElementById(id);
 
 const classNames={
@@ -319,7 +267,6 @@ function selectedClass(){
 
 function setClass(v){
  $("studentClass").value=v;
-
  if(v){
   localStorage.setItem("academyClass",v);
   $("classStatus").textContent=" پۆلەکەت پاشەکەوت کرا.";
@@ -327,11 +274,7 @@ function setClass(v){
 }
 
 function go(page){
-
- document.querySelectorAll(".page").forEach(x=>{
-  x.classList.add("hidden");
- });
-
+ document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
  $(page).classList.remove("hidden");
 
  document.querySelectorAll(".tab").forEach(x=>{
@@ -341,7 +284,6 @@ function go(page){
  if(page==="lessons")loadLessons();
  if(page==="pdfs")loadPdfs();
  if(page==="qa")loadQA();
-
 }
 
 document.querySelectorAll("[data-page]").forEach(b=>{
@@ -363,17 +305,22 @@ function esc(s){
 }
 
 async function api(path,opts={}){
-
  const headers={...(opts.headers||{})};
 
  if(adminKey){
   headers["X-Admin-Secret"]=adminKey;
  }
 
- const r=await fetch(API+"/api"+path,{
-  ...opts,
-  headers
- });
+ let r;
+
+ try{
+  r=await fetch(API+"/api"+path,{
+   ...opts,
+   headers
+  });
+ }catch(e){
+  throw Error("پەیوەندی بە سێرڤەرەوە نەکرا. تکایە Worker و ئینتەرنێت بپشکنە.");
+ }
 
  let d={};
 
@@ -389,37 +336,37 @@ async function api(path,opts={}){
 }
 
 $("saveClass").onclick=()=>{
-
  if(!$("studentClass").value){
   $("classStatus").textContent=" تکایە پۆل هەڵبژێرە";
   return;
  }
-
  setClass($("studentClass").value);
-
 };
 
 function fillClassSelect(id){
-
  $(id).innerHTML=Object.entries(classNames)
  .map(([v,n])=>`<option value="${v}">${n}</option>`)
  .join("");
-
 }
 
 ["lClass","pClass","qClass"].forEach(fillClassSelect);
 
-// بارکردنی وانەکان
 async function loadLessons(){
-
  let box=$("lessonList");
 
+ if(!selectedClass()){
+  box.textContent="تکایە سەرەتا پۆلەکەت هەڵبژێرە.";
+  return;
+ }
+
+ box.textContent="چاوەڕێ بکە...";
+
  try{
-
   let d=await api("/lessons?class="+encodeURIComponent(selectedClass()));
+  let items=Array.isArray(d.items)?d.items:[];
 
-  box.innerHTML=d.items.length
-   ?d.items.map(x=>`
+  box.innerHTML=items.length
+   ?items.map(x=>`
     <div class="item">
      <h4>${esc(x.title)}</h4>
      <div>${esc(x.body).replace(/\n/g,"<br>")}</div>
@@ -427,26 +374,27 @@ async function loadLessons(){
     </div>
    `).join("")
    :"هیچ وانەیەک بۆ ئەم پۆلە زیاد نەکراوە.";
-
  }catch(e){
-
   box.textContent=e.message;
-
  }
-
 }
 
-// بارکردنی PDF
 async function loadPdfs(){
-
  let box=$("pdfList");
 
+ if(!selectedClass()){
+  box.textContent="تکایە سەرەتا پۆلەکەت هەڵبژێرە.";
+  return;
+ }
+
+ box.textContent="چاوەڕێ بکە...";
+
  try{
-
   let d=await api("/pdfs?class="+encodeURIComponent(selectedClass()));
+  let items=Array.isArray(d.items)?d.items:[];
 
-  box.innerHTML=d.items.length
-   ?d.items.map(x=>`
+  box.innerHTML=items.length
+   ?items.map(x=>`
     <div class="item">
      <h4>📄 ${esc(x.title)}</h4>
      <a href="${API}/api/files/${encodeURIComponent(x.id)}" target="_blank" rel="noopener">
@@ -455,58 +403,48 @@ async function loadPdfs(){
     </div>
    `).join("")
    :"هیچ مەلزەمەیەک زیاد نەکراوە.";
-
  }catch(e){
-
   box.textContent=e.message;
-
  }
-
 }
 
-// بارکردنی پرسیار و وەڵام
 async function loadQA(){
-
  let box=$("qaList");
+ box.textContent="چاوەڕێ بکە...";
 
  try{
-
   let d=await api("/questions");
+  let items=Array.isArray(d.items)?d.items:[];
 
-  box.innerHTML=d.items.length
-   ?d.items.map(x=>`
+  box.innerHTML=items.length
+   ?items.map(x=>`
     <div class="item">
      <b>${esc(x.name||"خوێندکار")}:</b>
      <div>${esc(x.question)}</div>
-
      ${x.answer
       ?`<p class="success"><b>وەڵام:</b> ${esc(x.answer)}</p>`
       :'<span class="pill">چاوەڕێی وەڵام</span>'
      }
-
     </div>
    `).join("")
    :"هێشتا پرسیارێک نییە.";
-
  }catch(e){
-
   box.textContent=e.message;
-
  }
-
 }
 
-// ناردنی پرسیار
 $("sendQuestion").onclick=async()=>{
-
  let question=$("newQuestion").value.trim();
 
  if(!question){
-  return $("askStatus").textContent="پرسیارەکەت بنووسە.";
+  $("askStatus").textContent="پرسیارەکەت بنووسە.";
+  return;
  }
 
- try{
+ $("sendQuestion").disabled=true;
+ $("askStatus").textContent="پرسیارەکەت دەنێردرێت...";
 
+ try{
   await api("/questions",{
    method:"POST",
    headers:{"Content-Type":"application/json"},
@@ -518,47 +456,56 @@ $("sendQuestion").onclick=async()=>{
 
   $("newQuestion").value="";
   $("askStatus").textContent="پرسیارەکەت نێردرا.";
-
   loadQA();
-
  }catch(e){
-
   $("askStatus").textContent=e.message;
-
+ }finally{
+  $("sendQuestion").disabled=false;
  }
-
 };
 
-// دەستپێکردنی تاقیکردنەوە
 $("loadQuiz").onclick=async()=>{
-
  let box=$("quizArea");
 
- try{
+ if(!selectedClass()){
+  box.textContent="تکایە سەرەتا پۆلەکەت هەڵبژێرە.";
+  return;
+ }
 
+ box.textContent="تاقیکردنەوە بار دەکرێت...";
+
+ try{
   let d=await api("/quizzes?class="+encodeURIComponent(selectedClass()));
 
-  if(!d.items.length){
+  if(!d.items||!d.items.length){
    box.textContent="تاقیکردنەوەیەک بۆ ئەم پۆلە ئامادە نییە.";
    return;
   }
 
   currentQuiz=d.items[0];
+
+  if(typeof currentQuiz.questions==="string"){
+   currentQuiz.questions=JSON.parse(currentQuiz.questions);
+  }
+
+  if(!Array.isArray(currentQuiz.questions)&&currentQuiz.questions_json){
+   currentQuiz.questions=typeof currentQuiz.questions_json==="string"
+    ?JSON.parse(currentQuiz.questions_json)
+    :currentQuiz.questions_json;
+  }
+
+  if(!Array.isArray(currentQuiz.questions)||!currentQuiz.questions.length){
+   throw Error("پرسیارەکانی تاقیکردنەوە بە دروستی ئامادە نەکراون.");
+  }
+
   answers={};
-
   renderQuiz();
-
  }catch(e){
-
   box.textContent=e.message;
-
  }
-
 };
 
-// پیشاندانی پرسیارەکانی تاقیکردنەوە
 function renderQuiz(){
-
  let q=currentQuiz.questions;
  let box=$("quizArea");
 
@@ -566,13 +513,9 @@ function renderQuiz(){
   <h3>${esc(currentQuiz.title)}</h3>
  `+
  q.map((x,i)=>`
-
   <div class="question">
-
    <b>${i+1}. ${esc(x.question)}</b>
-
    ${x.options.map((o,j)=>`
-
     <button
      class="option ${answers[i]===j?"selected":""}"
      data-q="${i}"
@@ -580,53 +523,49 @@ function renderQuiz(){
     >
      ${esc(o)}
     </button>
-
    `).join("")}
-
   </div>
-
  `).join("")+
  `
   <button class="primary" id="finishQuiz">
    تەواوکردن و بینینی ئەنجام
   </button>
-
   <div id="quizResult"></div>
  `;
 
  box.querySelectorAll("[data-q]").forEach(b=>{
-
   b.onclick=()=>{
-
    answers[b.dataset.q]=Number(b.dataset.a);
-
    renderQuiz();
-
   };
-
  });
 
  $("finishQuiz").onclick=()=>{
-
   let score=q.reduce((n,x,i)=>{
-   return n+(answers[i]===x.answer?1:0);
+   return n+(answers[i]===Number(x.answer)?1:0);
   },0);
 
   $("quizResult").innerHTML=`
    <h3 class="success">ئەنجام: ${score} لە ${q.length}</h3>
+   <p>پرسیارەکان: ${q.length}</p>
+   <p>وەڵامی ڕاست: ${score}</p>
+   <p>وەڵامی هەڵە: ${q.length-score}</p>
   `;
-
  };
-
 };
 
-// چوونەژوورەوەی بەڕێوەبەر
 $("adminConnect").onclick=async()=>{
-
  adminKey=$("adminKey").value.trim();
 
- try{
+ if(!adminKey){
+  $("adminStatus").textContent="تکایە کلیلی بەڕێوەبەر بنووسە.";
+  return;
+ }
 
+ $("adminConnect").disabled=true;
+ $("adminStatus").textContent="چاوەڕێ بکە...";
+
+ try{
   await api("/admin/check");
 
   $("adminLogin").classList.add("hidden");
@@ -634,152 +573,122 @@ $("adminConnect").onclick=async()=>{
   $("adminStatus").textContent="";
 
   loadAdminQuestions();
-
  }catch(e){
-
   adminKey="";
   $("adminStatus").textContent="کلیلەکە هەڵەیە یان سێرڤەر ئامادە نییە.";
-
+ }finally{
+  $("adminConnect").disabled=false;
  }
-
 };
 
-// زیادکردنی وانە
 $("addLesson").onclick=async()=>{
-
  try{
-
   await api("/admin/lessons",{
    method:"POST",
    headers:{"Content-Type":"application/json"},
    body:JSON.stringify({
     class_no:Number($("lClass").value),
-    title:$("lTitle").value,
-    body:$("lBody").value
+    title:$("lTitle").value.trim(),
+    body:$("lBody").value.trim()
    })
   });
 
   alert("وانەکە زیاد کرا.");
-
   $("lTitle").value="";
   $("lBody").value="";
-
  }catch(e){
-
   alert(e.message);
-
  }
-
 };
 
-// زیادکردنی PDF
 $("addPdf").onclick=async()=>{
-
  let f=$("pFile").files[0];
 
  if(!f){
-  return $("pdfStatus").textContent="فایلی PDF هەڵبژێرە.";
+  $("pdfStatus").textContent="فایلی PDF هەڵبژێرە.";
+  return;
  }
 
  if(f.type!=="application/pdf"){
-  return $("pdfStatus").textContent="تەنها PDF ڕێگەپێدراوە.";
+  $("pdfStatus").textContent="تەنها PDF ڕێگەپێدراوە.";
+  return;
  }
 
  let fd=new FormData();
-
  fd.append("file",f);
- fd.append("title",$("pTitle").value);
+ fd.append("title",$("pTitle").value.trim());
  fd.append("class_no",$("pClass").value);
 
- try{
+ $("addPdf").disabled=true;
+ $("pdfStatus").textContent="PDF بار دەکرێت...";
 
+ try{
   await api("/admin/pdfs",{
    method:"POST",
    body:fd
   });
 
   $("pdfStatus").textContent="PDF بارکرا.";
-
   $("pFile").value="";
   $("pTitle").value="";
-
  }catch(e){
-
   $("pdfStatus").textContent=e.message;
-
+ }finally{
+  $("addPdf").disabled=false;
  }
-
 };
 
-// زیادکردنی تاقیکردنەوە
 $("addQuiz").onclick=async()=>{
-
  try{
-
   let questions=JSON.parse($("qJson").value);
+
+  if(!Array.isArray(questions)||!questions.length){
+   throw Error("پرسیارەکان دەبێت بە شێوەی لیست بن.");
+  }
 
   await api("/admin/quizzes",{
    method:"POST",
    headers:{"Content-Type":"application/json"},
    body:JSON.stringify({
     class_no:Number($("qClass").value),
-    title:$("qTitle").value,
+    title:$("qTitle").value.trim(),
     questions
    })
   });
 
   alert("تاقیکردنەوە زیاد کرا.");
-
+  $("qTitle").value="";
+  $("qJson").value="";
  }catch(e){
-
   alert("JSON یان داتا هەڵەیە: "+e.message);
-
  }
-
 };
 
-// بارکردنی پرسیارەکان بۆ بەڕێوەبەر
 async function loadAdminQuestions(){
-
  try{
-
   let d=await api("/admin/questions");
+  let items=Array.isArray(d.items)?d.items:[];
 
-  $("adminQuestions").innerHTML=d.items.map(x=>`
-
+  $("adminQuestions").innerHTML=items.map(x=>`
    <div class="item">
-
     <b>${esc(x.name||"خوێندکار")}</b>
-
     <p>${esc(x.question)}</p>
-
-    <textarea id="ans${x.id}" placeholder="وەڵام...">${esc(x.answer||"")}</textarea>
-
-    <button class="secondary" onclick="answerQuestion(${x.id})">
+    <textarea id="ans${Number(x.id)}" placeholder="وەڵام...">${esc(x.answer||"")}</textarea>
+    <button class="secondary" onclick="answerQuestion(${Number(x.id)})">
      پاشەکەوتی وەڵام
     </button>
-
-    <button class="danger" onclick="deleteQuestion(${x.id})">
+    <button class="danger" onclick="deleteQuestion(${Number(x.id)})">
      سڕینەوە
     </button>
-
    </div>
-
   `).join("")||"پرسیار نییە.";
-
  }catch(e){
-
   $("adminQuestions").textContent=e.message;
-
  }
-
 }
 
-// وەڵامدانەوەی پرسیار
 window.answerQuestion=async id=>{
-
  try{
-
   await api("/admin/questions/"+id,{
    method:"PATCH",
    headers:{"Content-Type":"application/json"},
@@ -788,41 +697,30 @@ window.answerQuestion=async id=>{
    })
   });
 
+  alert("وەڵامەکە پاشەکەوت کرا.");
   loadAdminQuestions();
-
  }catch(e){
-
   alert(e.message);
-
  }
-
 };
 
-// سڕینەوەی پرسیار
 window.deleteQuestion=async id=>{
-
  if(!confirm("دڵنیایت لە سڕینەوە؟"))return;
 
  try{
-
   await api("/admin/questions/"+id,{
    method:"DELETE"
   });
 
   loadAdminQuestions();
-
  }catch(e){
-
   alert(e.message);
-
  }
-
 };
 
-// پاشەکەوتکردنی پۆلی خوێندکار
 let saved=localStorage.getItem("academyClass");
 
-if(saved){
+if(saved&&classNames[saved]){
  $("studentClass").value=saved;
 }
 
